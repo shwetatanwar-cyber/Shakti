@@ -1,47 +1,69 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 interface Pillar {
   title: string;
   subtitle: string;
   description: string;
+  slug: string;
   span: string;
 }
 
 const pillars: Pillar[] = [
   {
-    title: "The Flow",
-    subtitle: "Movement as meditation",
-    description: "The body remembers what the mind forgets. Through movement, we return to the source.",
-    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-2",
-  },
-  {
-    title: "The Vibration",
-    subtitle: "Sound as architecture",
-    description: "Every frequency is a doorway. We build cathedrals from resonance.",
-    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
-  },
-  {
-    title: "The Stillness",
-    subtitle: "Silence as power",
-    description: "In the pause between breaths, the universe whispers its secrets.",
-    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
-  },
-  {
-    title: "The Alchemy",
-    subtitle: "Transformation as art",
-    description: "We transmute the raw material of experience into gold. Lead into light.",
+    title: "Evolution",
+    subtitle: "Growth as practice",
+    description: "The spiral of becoming. Each cycle refines, each iteration deepens the pattern.",
+    slug: "evolution",
     span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-2",
   },
   {
     title: "The Vision",
-    subtitle: "Seeing beyond sight",
+    subtitle: "Artist · Seeing beyond sight",
     description: "The third eye does not look outward. It looks inward, and finds infinity.",
+    slug: "vision",
+    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
+  },
+  {
+    title: "The Flow",
+    subtitle: "Dance · Movement as meditation",
+    description: "The body remembers what the mind forgets. Through movement, we return to the source.",
+    slug: "flow",
+    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
+  },
+  {
+    title: "The Vibration",
+    subtitle: "Music · Sound as architecture",
+    description: "Every frequency is a doorway. We build cathedrals from resonance.",
+    slug: "vibrations",
+    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-2",
+  },
+  {
+    title: "The Stillness",
+    subtitle: "Yoga · Silence as power",
+    description: "In the pause between breaths, the universe whispers its secrets.",
+    slug: "stillness",
+    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
+  },
+  {
+    title: "The Alchemy",
+    subtitle: "Nutrition · Transformation as art",
+    description: "We transmute the raw material of experience into gold. Lead into light.",
+    slug: "alchemy",
     span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
   },
   {
     title: "The Pilgrimage",
-    subtitle: "Journey as destination",
+    subtitle: "Travel · Journey as destination",
     description: "Every step is an arrival. The path and the pilgrim are one.",
+    slug: "pilgrimage",
+    span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
+  },
+  {
+    title: "Resonance",
+    subtitle: "Inspiration · Echoes of influence",
+    description: "We are shaped by what moves us. These are the frequencies that formed this vessel.",
+    slug: "resonance",
     span: "col-span-12 sm:col-span-6 md:col-span-4 row-span-1",
   },
 ];
@@ -50,16 +72,16 @@ const PillarTile = ({ pillar, index }: { pillar: Pillar; index: number }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div
-      className={`glass-tile ${pillar.span} p-6 md:p-8 relative overflow-hidden cursor-pointer group`}
+    <Link
+      to={`/pillar/${pillar.slug}`}
+      className={`glass-tile ${pillar.span} p-6 md:p-8 relative overflow-hidden cursor-pointer group block`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Hover glow */}
       <div
         className="absolute inset-0 transition-opacity duration-700 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, hsl(30 100% 60% / 0.2), hsl(12 60% 34% / 0.1), transparent 70%)',
+          background: 'radial-gradient(ellipse at center, hsl(var(--saffron) / 0.2), hsl(var(--umber) / 0.1), transparent 70%)',
           opacity: isHovered ? 1 : 0,
         }}
       />
@@ -87,7 +109,7 @@ const PillarTile = ({ pillar, index }: { pillar: Pillar; index: number }) => {
           {pillar.description}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -95,7 +117,7 @@ const PillarsGrid = () => {
   return (
     <>
       {pillars.map((pillar, index) => (
-        <PillarTile key={pillar.title} pillar={pillar} index={index} />
+        <PillarTile key={pillar.slug} pillar={pillar} index={index} />
       ))}
     </>
   );
