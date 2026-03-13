@@ -167,6 +167,7 @@ export type Database = {
       }
       locations: {
         Row: {
+          city_country: string | null
           coordinates: unknown
           created_at: string | null
           description: string | null
@@ -175,6 +176,7 @@ export type Database = {
           name: string
         }
         Insert: {
+          city_country?: string | null
           coordinates?: unknown
           created_at?: string | null
           description?: string | null
@@ -183,6 +185,7 @@ export type Database = {
           name: string
         }
         Update: {
+          city_country?: string | null
           coordinates?: unknown
           created_at?: string | null
           description?: string | null

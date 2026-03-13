@@ -7,7 +7,7 @@ export const useProfileSettings = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profile_settings')
-        .select('*, locations:current_location_id(name, description)')
+        .select('*, locations:current_location_id(name, city_country, description, coordinates)')
         .limit(1)
         .maybeSingle();
       if (error) throw error;
