@@ -172,6 +172,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: string
+          is_current: boolean | null
           is_visited: boolean | null
           name: string
         }
@@ -181,6 +182,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_current?: boolean | null
           is_visited?: boolean | null
           name: string
         }
@@ -190,6 +192,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_current?: boolean | null
           is_visited?: boolean | null
           name?: string
         }
