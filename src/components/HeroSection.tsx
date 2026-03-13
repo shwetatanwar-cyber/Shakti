@@ -4,9 +4,10 @@ import { format } from 'date-fns';
 const HeroSection = () => {
   const { data: profile, isLoading } = useProfileSettings();
 
-  const locationName = profile?.locations && typeof profile.locations === 'object' && !Array.isArray(profile.locations)
-    ? (profile.locations as { name: string }).name
+  const locationData = profile?.locations && typeof profile.locations === 'object' && !Array.isArray(profile.locations)
+    ? (profile.locations as { name: string; city_country: string | null })
     : null;
+  const locationName = locationData?.city_country || locationData?.name || null;
 
   const lastUpdated = profile?.last_updated_at
     ? format(new Date(profile.last_updated_at), 'MMM d, yyyy')

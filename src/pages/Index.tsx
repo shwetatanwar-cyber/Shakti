@@ -10,9 +10,10 @@ const Index = () => {
   const { data: profile, isLoading: profileLoading } = useProfileSettings();
   const { data: practicesCount, isLoading: practicesLoading } = useActivePracticesCount();
 
-  const locationName = profile?.locations && typeof profile.locations === 'object' && !Array.isArray(profile.locations)
-    ? (profile.locations as { name: string }).name
+  const locationData = profile?.locations && typeof profile.locations === 'object' && !Array.isArray(profile.locations)
+    ? (profile.locations as { name: string; city_country: string | null })
     : null;
+  const locationName = locationData?.city_country || locationData?.name || null;
 
   return (
     <div className="min-h-screen relative">
