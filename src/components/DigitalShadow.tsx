@@ -9,7 +9,7 @@ const oracleResponses = [
   "Release the question. The universe responds to states of being, not interrogations.",
 ];
 
-const DigitalOracle = () => {
+const DigitalShadow = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
   const [input, setInput] = useState('');
@@ -40,7 +40,7 @@ const DigitalOracle = () => {
       i++;
       if (i >= response.length) {
         clearInterval(interval);
-        setMessages(prev => [...prev, { role: 'oracle', text: response }]);
+        setMessages(prev => [...prev, { role: 'shadow', text: response }]);
         setIsTyping(false);
         setDisplayedText('');
       }
@@ -49,16 +49,15 @@ const DigitalOracle = () => {
 
   return (
     <>
-      {/* Floating sphere */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-8 right-8 w-16 h-16 rounded-full z-50 cursor-pointer animate-float"
+          className="fixed bottom-8 right-8 w-16 h-16 rounded-full z-50 cursor-pointer"
           style={{
-            background: 'radial-gradient(circle at 30% 30%, hsl(270 76% 65%), hsl(270 76% 40%), hsl(270 76% 25%))',
+            background: 'radial-gradient(circle at 30% 30%, hsl(var(--violet) / 0.8), hsl(var(--violet) / 0.4), hsl(var(--violet) / 0.2))',
             animation: 'float 6s ease-in-out infinite, pulse-glow 3s ease-in-out infinite',
           }}
-          aria-label="Open Digital Oracle"
+          aria-label="Open Digital Shadow"
         >
           <div
             className="absolute inset-0 rounded-full"
@@ -69,7 +68,6 @@ const DigitalOracle = () => {
         </button>
       )}
 
-      {/* Fullscreen Oracle */}
       {isOpen && (
         <div
           className="fixed inset-0 z-50 flex flex-col items-center justify-center"
@@ -78,7 +76,6 @@ const DigitalOracle = () => {
             backdropFilter: 'blur(40px)',
           }}
         >
-          {/* Close */}
           <button
             onClick={() => setIsOpen(false)}
             className="absolute top-8 right-8 font-body text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors"
@@ -88,13 +85,12 @@ const DigitalOracle = () => {
 
           <div className="w-full max-w-2xl px-6 flex flex-col items-center">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent mb-4">
-              Digital Oracle
+              Digital Shadow
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-light italic mb-12 text-center">
               Ask, and the energy responds
             </h2>
 
-            {/* Messages */}
             <div className="w-full max-h-[40vh] overflow-y-auto mb-8 space-y-6">
               {messages.map((msg, i) => (
                 <div key={i} className={msg.role === 'user' ? 'text-right' : 'text-left'}>
@@ -120,7 +116,6 @@ const DigitalOracle = () => {
               )}
             </div>
 
-            {/* Input */}
             <div className="w-full relative">
               <input
                 ref={inputRef}
@@ -139,4 +134,4 @@ const DigitalOracle = () => {
   );
 };
 
-export default DigitalOracle;
+export default DigitalShadow;

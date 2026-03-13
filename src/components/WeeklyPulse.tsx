@@ -1,18 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
-
-const reflections = [
-  { day: "Mon", title: "The Unraveling", text: "Sat with discomfort for 40 minutes. The ego tried to negotiate. I let it speak, then let it dissolve." },
-  { day: "Tue", title: "Electric Dawn", text: "Movement session at 5am. The body became liquid. There is a frequency between effort and surrender — I found it." },
-  { day: "Wed", title: "Hollow Bone", text: "Became a channel today. The words that came through during breathwork were not mine. I wrote them down anyway." },
-  { day: "Thu", title: "The Forge", text: "Resistance is the raw material. Today I met it with curiosity instead of force. The alchemy happened on its own." },
-  { day: "Fri", title: "Tessellation", text: "Patterns within patterns. The mandala practice revealed a geometry I have been carrying in my ribcage." },
-  { day: "Sat", title: "Still Water", text: "No practice today. Sometimes the deepest work is allowing yourself to be completely ordinary." },
-  { day: "Sun", title: "The Return", text: "Closed the week with a fire ceremony. Everything I released turned to light before it turned to ash." },
-];
+import { useWeeklyPulse } from '@/hooks/useProfileSettings';
+import { format } from 'date-fns';
 
 const WeeklyPulse = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const { data: entries, isLoading } = useWeeklyPulse();
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -28,6 +21,8 @@ const WeeklyPulse = () => {
     return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
   return (
     <section className="w-full py-16 md:py-24 relative">
       <div className="px-4 md:px-8 mb-8">
@@ -39,42 +34,57 @@ const WeeklyPulse = () => {
         </h2>
       </div>
 
-      {/* Progress bar */}
       <div className="mx-4 md:mx-8 mb-6 h-px bg-muted relative">
         <div
           className="absolute top-0 left-0 h-full transition-all duration-150"
           style={{
             width: `${progress * 100}%`,
-            background: 'linear-gradient(90deg, hsl(270 76% 53%), hsl(270 76% 53% / 0.3))',
+            background: 'linear-gradient(90deg, hsl(var(--violet)), hsl(var(--violet) / 0.3))',
           }}
         />
       </div>
 
-      {/* Horizontal scroll */}
       <div
         ref={scrollRef}
         className="horizontal-scroll-container flex overflow-x-auto gap-0 pl-4 md:pl-8 pr-4 md:pr-8"
       >
-        {reflections.map((reflection, index) => (
-          <div
-            key={reflection.day}
-            className="flex-shrink-0 w-[300px] md:w-[380px] py-6 px-6 relative"
-            style={{
-              borderLeft: index > 0 ? '1px solid hsl(270 76% 53% / 0.3)' : 'none',
-            }}
-          >
-            <span className="font-body text-[10px] tracking-[0.3em] uppercase text-accent">
-              {reflection.day}
-            </span>
-            <h3 className="font-display text-xl md:text-2xl font-light italic mt-2 mb-3">
-              {reflection.title}
-            </h3>
-            <p className="font-body text-sm text-muted-foreground leading-relaxed">
-              {reflection.text}
-            </p>
+        {isLoading ? (
+          Array.from({ length: 7 }).map((_, i) => (
+            <div key={i} className="flex-shrink-0 w-[300px] md:w-[380px] py-6 px-6 animate-pulse">
+              <div className="h-3 w-10 bg-muted rounded mb-4" />
+              <div className="h-6 w-40 bg-muted rounded mb-3" />
+              <div className="h-16 w-full bg-muted rounded" />
+            </div>
+          ))
+        ) : entries && entries.length > 0 ? (
+          entries.map((entry, index) => (
+            <div
+              key={entry.id}
+              className="flex-shrink-0 w-[300px] md:w-[380px] py-6 px-6 relative"
+              style={{
+                borderLeft: index > 0 ? '1px solid hsl(var(--violet) / 0.3)' : 'none',
+              }}
+            >
+              <span className="font-body text-[10px] tracking-[0.3em] uppercase text-accent">
+                {entry.reflection_date
+                  ? `${dayLabels[new Date(entry.reflection_date).getDay()]} · ${format(new Date(entry.reflection_date), 'MMM d')}`
+                  : `Day ${index + 1}`}
+              </span>
+              {entry.mood_score !== null && (
+                <span className="ml-3 font-body text-[10px] text-muted-foreground">
+                  Mood: {entry.mood_score}/10
+                </span>
+              )}
+              <p className="font-body text-sm text-muted-foreground leading-relaxed mt-3">
+                {entry.content}
+              </p>
+            </div>
+          ))
+        ) : (
+          <div className="flex-shrink-0 py-6 px-6">
+            <p className="font-body text-sm text-muted-foreground italic">No reflections yet.</p>
           </div>
-        ))}
-        {/* Spacer */}
+        )}
         <div className="flex-shrink-0 w-8" />
       </div>
     </section>
