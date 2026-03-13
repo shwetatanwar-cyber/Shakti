@@ -9,7 +9,7 @@ export const useProfileSettings = () => {
         .from('profile_settings')
         .select('*, locations:current_location_id(name, description)')
         .limit(1)
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
