@@ -106,6 +106,53 @@ export type Database = {
           },
         ]
       }
+      daily_rituals: {
+        Row: {
+          activity_distribution: Json | null
+          created_at: string | null
+          date: string
+          energy_level: number | null
+          id: string
+          location_id: string | null
+          mood_score: number | null
+          reflection_text: string | null
+          sleep_hours: number | null
+          total_active_minutes: number | null
+        }
+        Insert: {
+          activity_distribution?: Json | null
+          created_at?: string | null
+          date?: string
+          energy_level?: number | null
+          id?: string
+          location_id?: string | null
+          mood_score?: number | null
+          reflection_text?: string | null
+          sleep_hours?: number | null
+          total_active_minutes?: number | null
+        }
+        Update: {
+          activity_distribution?: Json | null
+          created_at?: string | null
+          date?: string
+          energy_level?: number | null
+          id?: string
+          location_id?: string | null
+          mood_score?: number | null
+          reflection_text?: string | null
+          sleep_hours?: number | null
+          total_active_minutes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_rituals_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       digital_shadow_knowledge: {
         Row: {
           content: string | null
@@ -431,21 +478,31 @@ export type Database = {
       }
       wellness_logs: {
         Row: {
+          daily_ritual_id: string | null
           id: string
           logged_at: string | null
           recipe_id: string | null
         }
         Insert: {
+          daily_ritual_id?: string | null
           id?: string
           logged_at?: string | null
           recipe_id?: string | null
         }
         Update: {
+          daily_ritual_id?: string | null
           id?: string
           logged_at?: string | null
           recipe_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "wellness_logs_daily_ritual_id_fkey"
+            columns: ["daily_ritual_id"]
+            isOneToOne: false
+            referencedRelation: "daily_rituals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "wellness_logs_recipe_id_fkey"
             columns: ["recipe_id"]
