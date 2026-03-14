@@ -14,6 +14,58 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          created_at: string | null
+          daily_ritual_id: string | null
+          id: string
+          metrics: Json | null
+          movement_id: string | null
+          notes: string | null
+          wellness_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          daily_ritual_id?: string | null
+          id?: string
+          metrics?: Json | null
+          movement_id?: string | null
+          notes?: string | null
+          wellness_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          daily_ritual_id?: string | null
+          id?: string
+          metrics?: Json | null
+          movement_id?: string | null
+          notes?: string | null
+          wellness_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_logs_daily_ritual_id_fkey"
+            columns: ["daily_ritual_id"]
+            isOneToOne: false
+            referencedRelation: "daily_rituals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_logs_movement_id_fkey"
+            columns: ["movement_id"]
+            isOneToOne: false
+            referencedRelation: "movement_library"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_logs_wellness_id_fkey"
+            columns: ["wellness_id"]
+            isOneToOne: false
+            referencedRelation: "wellness_library"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alchemy_elements: {
         Row: {
           id: string
@@ -245,6 +297,30 @@ export type Database = {
         }
         Relationships: []
       }
+      movement_library: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          name: string
+          unit_type: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          unit_type?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          unit_type?: string | null
+        }
+        Relationships: []
+      }
       music_library: {
         Row: {
           artist: string | null
@@ -288,6 +364,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "music_library_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_philosophy: {
+        Row: {
+          created_at: string | null
+          ethic_statement: string
+          framework_statement: string
+          id: string
+          location_id: string | null
+          value_statement: string
+        }
+        Insert: {
+          created_at?: string | null
+          ethic_statement: string
+          framework_statement: string
+          id?: string
+          location_id?: string | null
+          value_statement: string
+        }
+        Update: {
+          created_at?: string | null
+          ethic_statement?: string
+          framework_statement?: string
+          id?: string
+          location_id?: string | null
+          value_statement?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_philosophy_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
@@ -371,8 +482,8 @@ export type Database = {
           id: string
           location_id: string | null
           start_date: string | null
+          strategy: string | null
           title: string
-          work_philosophy: string | null
         }
         Insert: {
           brief?: string | null
@@ -382,8 +493,8 @@ export type Database = {
           id?: string
           location_id?: string | null
           start_date?: string | null
+          strategy?: string | null
           title: string
-          work_philosophy?: string | null
         }
         Update: {
           brief?: string | null
@@ -393,8 +504,8 @@ export type Database = {
           id?: string
           location_id?: string | null
           start_date?: string | null
+          strategy?: string | null
           title?: string
-          work_philosophy?: string | null
         }
         Relationships: [
           {
@@ -475,6 +586,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wellness_library: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       wellness_logs: {
         Row: {
