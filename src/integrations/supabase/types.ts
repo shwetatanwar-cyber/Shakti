@@ -481,6 +481,7 @@ export type Database = {
           full_description: string | null
           id: string
           location_id: string | null
+          outcome: string | null
           start_date: string | null
           strategy: string | null
           title: string
@@ -492,6 +493,7 @@ export type Database = {
           full_description?: string | null
           id?: string
           location_id?: string | null
+          outcome?: string | null
           start_date?: string | null
           strategy?: string | null
           title: string
@@ -503,6 +505,7 @@ export type Database = {
           full_description?: string | null
           id?: string
           location_id?: string | null
+          outcome?: string | null
           start_date?: string | null
           strategy?: string | null
           title?: string
