@@ -17,12 +17,38 @@ interface Project {
   location?: { name: string; city_country: string | null } | null;
 }
 
-interface ProjectDetail {
+interface ProudMoment {
   id: string;
-  project_id: string | null;
-  type: string | null;
-  content: string | null;
-  meta_info: string | null;
+  project_id: string;
+  content: string;
+  gratitude: string | null;
+  project?: { title: string } | null;
+}
+
+interface Failure {
+  id: string;
+  project_id: string;
+  content: string;
+  learning: string | null;
+  project?: { title: string } | null;
+}
+
+interface SkillWithProject {
+  skill_id: string;
+  project_id: string;
+  skill: { name: string } | null;
+}
+
+interface TraitWithProject {
+  trait_id: string;
+  project_id: string;
+  trait: { name: string } | null;
+}
+
+interface AiToolWithProject {
+  tool_id: string;
+  project_id: string;
+  tool: { name: string } | null;
   project?: { title: string } | null;
 }
 
@@ -48,7 +74,11 @@ const formatDate = (dateStr: string | null) => {
 
 const EvolutionPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [projectDetails, setProjectDetails] = useState<ProjectDetail[]>([]);
+  const [proudMoments, setProudMoments] = useState<ProudMoment[]>([]);
+  const [failures, setFailures] = useState<Failure[]>([]);
+  const [skills, setSkills] = useState<SkillWithProject[]>([]);
+  const [traits, setTraits] = useState<TraitWithProject[]>([]);
+  const [aiTools, setAiTools] = useState<AiToolWithProject[]>([]);
   const [philosophies, setPhilosophies] = useState<Philosophy[]>([]);
   const [expandedProject, setExpandedProject] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('timeline');
@@ -57,24 +87,30 @@ const EvolutionPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const [projectsRes, detailsRes, philRes] = await Promise.all([
+      const [projectsRes, proudRes, failRes, skillsRes, traitsRes, aiRes, philRes] = await Promise.all([
         supabase.from('projects').select('*, location:locations(name, city_country)').order('start_date', { ascending: false }),
-        supabase.from('project_details').select('*, project:projects(title)'),
+        supabase.from('project_proud_moments').select('*, project:projects(title)'),
+        supabase.from('project_failures').select('*, project:projects(title)'),
+        supabase.from('project_skills').select('*, skill:skills_library(name)'),
+        supabase.from('project_traits').select('*, trait:traits_library(name)'),
+        supabase.from('project_ai_tools').select('*, tool:ai_tools_library(name), project:projects(title)'),
         supabase.from('professional_philosophy').select('*'),
       ]);
-      if (projectsRes.data) setProjects(projectsRes.data);
-      if (detailsRes.data) setProjectDetails(detailsRes.data);
-      if (philRes.data) setPhilosophies(philRes.data);
+      if (projectsRes.data) setProjects(projectsRes.data as any);
+      if (proudRes.data) setProudMoments(proudRes.data as any);
+      if (failRes.data) setFailures(failRes.data as any);
+      if (skillsRes.data) setSkills(skillsRes.data as any);
+      if (traitsRes.data) setTraits(traitsRes.data as any);
+      if (aiRes.data) setAiTools(aiRes.data as any);
+      if (philRes.data) setPhilosophies(philRes.data as any);
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  const proudMoments = projectDetails.filter(d => d.type === 'proud_moment');
-  const failures = projectDetails.filter(d => d.type === 'failure');
-  const proSkills = projectDetails.filter(d => d.type === 'skill_pro');
-  const onDemandSkills = projectDetails.filter(d => d.type === 'skill_on_demand');
-  const aiTools = projectDetails.filter(d => d.type === 'ai_tool');
+  // Deduplicate skills and traits
+  const uniqueSkills = Array.from(new Map(skills.map(s => [s.skill_id, s.skill?.name])).values()).filter(Boolean);
+  const uniqueTraits = Array.from(new Map(traits.map(t => [t.trait_id, t.trait?.name])).values()).filter(Boolean);
 
   return (
     <div className="min-h-screen relative">
@@ -83,18 +119,11 @@ const EvolutionPage = () => {
       <main className="relative z-10 px-4 md:px-8 py-16 max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <Link
-            to="/"
-            className="font-body text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-accent transition-colors mb-12 inline-block"
-          >
+          <Link to="/" className="font-body text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-accent transition-colors mb-12 inline-block">
             ← Back
           </Link>
-          <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent mb-4">
-            Growth as Practice
-          </p>
-          <h1 className="font-display text-5xl md:text-7xl font-light italic mb-4">
-            Evolution
-          </h1>
+          <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent mb-4">Growth as Practice</p>
+          <h1 className="font-display text-5xl md:text-7xl font-light italic mb-4">Evolution</h1>
           <p className="font-body text-lg text-muted-foreground leading-relaxed max-w-2xl">
             The spiral of becoming. Each cycle refines, each iteration deepens the pattern.
           </p>
@@ -128,37 +157,22 @@ const EvolutionPage = () => {
             {activeSection === 'timeline' && (
               <motion.div key="timeline" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }}>
                 <h2 className="font-display text-2xl italic mb-8 text-foreground">Project Timeline</h2>
-
                 <div className="relative pl-8">
-                  {/* Vertical line */}
                   <div className="absolute left-3 top-0 bottom-0 w-px bg-gradient-to-b from-primary/60 via-secondary/40 to-transparent" />
-
                   {projects.length === 0 ? (
-                    <p className="text-muted-foreground font-body text-sm py-8">No projects yet. Add your first project to begin your evolution journey.</p>
+                    <p className="text-muted-foreground font-body text-sm py-8">No projects yet.</p>
                   ) : (
-                    projects.map((project, index) => (
+                    projects.map((project) => (
                       <div key={project.id} className="relative mb-10">
-                        {/* Node */}
                         <div className="absolute -left-5 top-1 w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
-
-                        {/* Date badge */}
                         <p className="font-body text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">
                           {formatDate(project.start_date)} — {formatDate(project.end_date)}
                         </p>
-
-                        {/* Card */}
-                        <div
-                          className="glass-tile p-6 cursor-pointer group"
-                          onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}
-                        >
+                        <div className="glass-tile p-6 cursor-pointer group" onClick={() => setExpandedProject(expandedProject === project.id ? null : project.id)}>
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <h3 className="font-display text-xl italic text-foreground group-hover:text-primary transition-colors">
-                                {project.title}
-                              </h3>
-                              {project.brief && (
-                                <p className="font-body text-sm text-muted-foreground mt-1">{project.brief}</p>
-                              )}
+                              <h3 className="font-display text-xl italic text-foreground group-hover:text-primary transition-colors">{project.title}</h3>
+                              {project.brief && <p className="font-body text-sm text-muted-foreground mt-1">{project.brief}</p>}
                               {project.location && (
                                 <div className="flex items-center gap-1.5 mt-3 text-muted-foreground">
                                   <MapPin className="w-3 h-3 text-accent" />
@@ -170,16 +184,9 @@ const EvolutionPage = () => {
                               {expandedProject === project.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </span>
                           </div>
-
                           <AnimatePresence>
                             {expandedProject === project.id && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                                className="overflow-hidden"
-                              >
+                              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
                                 <div className="pt-6 mt-6 border-t border-border space-y-5">
                                   {project.full_description && (
                                     <div>
@@ -216,19 +223,12 @@ const EvolutionPage = () => {
               <motion.div key="proud" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }}>
                 <h2 className="font-display text-2xl italic mb-2 text-foreground">Proud Moments</h2>
                 <p className="font-body text-sm text-muted-foreground mb-8">Celebrating achievements and cultivating gratitude</p>
-
                 <div className="grid gap-6">
                   {proudMoments.length === 0 ? (
                     <p className="text-muted-foreground font-body text-sm py-8">No proud moments recorded yet.</p>
                   ) : (
                     proudMoments.map((moment, index) => (
-                      <motion.div
-                        key={moment.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="glass-tile p-6 relative overflow-hidden"
-                      >
+                      <motion.div key={moment.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="glass-tile p-6 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
                         <div className="relative z-10">
                           <div className="flex items-center gap-2 mb-3">
@@ -236,10 +236,10 @@ const EvolutionPage = () => {
                             <span className="font-body text-xs tracking-[0.15em] uppercase text-primary">{moment.project?.title || 'Project'}</span>
                           </div>
                           <p className="font-body text-sm text-foreground leading-relaxed">{moment.content}</p>
-                          {moment.meta_info && (
+                          {moment.gratitude && (
                             <div className="mt-4 pt-4 border-t border-border">
                               <h4 className="font-body text-[10px] tracking-[0.2em] uppercase text-accent mb-2">Gratitude</h4>
-                              <p className="font-body text-sm text-muted-foreground italic">{moment.meta_info}</p>
+                              <p className="font-body text-sm text-muted-foreground italic">{moment.gratitude}</p>
                             </div>
                           )}
                         </div>
@@ -255,19 +255,12 @@ const EvolutionPage = () => {
               <motion.div key="failures" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }}>
                 <h2 className="font-display text-2xl italic mb-2 text-foreground">Failures & Learnings</h2>
                 <p className="font-body text-sm text-muted-foreground mb-8">The refinement forge — where resilience is tempered</p>
-
                 <div className="grid gap-6">
                   {failures.length === 0 ? (
                     <p className="text-muted-foreground font-body text-sm py-8">No failures logged yet. Growth requires honesty.</p>
                   ) : (
                     failures.map((failure, index) => (
-                      <motion.div
-                        key={failure.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="glass-tile p-6 relative overflow-hidden border-destructive/20"
-                      >
+                      <motion.div key={failure.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="glass-tile p-6 relative overflow-hidden border-destructive/20">
                         <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent pointer-events-none" />
                         <div className="relative z-10">
                           <div className="flex items-center gap-2 mb-3">
@@ -276,10 +269,10 @@ const EvolutionPage = () => {
                           </div>
                           <h4 className="font-body text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">What Failed</h4>
                           <p className="font-body text-sm text-foreground leading-relaxed">{failure.content}</p>
-                          {failure.meta_info && (
+                          {failure.learning && (
                             <div className="mt-4 pt-4 border-t border-border">
                               <h4 className="font-body text-[10px] tracking-[0.2em] uppercase text-accent mb-2">Learnings</h4>
-                              <p className="font-body text-sm text-muted-foreground italic">{failure.meta_info}</p>
+                              <p className="font-body text-sm text-muted-foreground italic">{failure.learning}</p>
                             </div>
                           )}
                         </div>
@@ -294,9 +287,7 @@ const EvolutionPage = () => {
             {activeSection === 'skills' && (
               <motion.div key="skills" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }}>
                 <h2 className="font-display text-2xl italic mb-8 text-foreground">Skill & Trait Polarity</h2>
-
                 <div className="grid md:grid-cols-2 gap-6">
-                  {/* Pro Skills */}
                   <div className="glass-tile p-6">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
@@ -308,20 +299,19 @@ const EvolutionPage = () => {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      {proSkills.length === 0 ? (
+                      {uniqueSkills.length === 0 ? (
                         <p className="text-muted-foreground font-body text-sm">No pro skills listed yet.</p>
                       ) : (
-                        proSkills.map((skill) => (
-                          <div key={skill.id} className="flex items-center gap-3">
+                        uniqueSkills.map((name, i) => (
+                          <div key={i} className="flex items-center gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                            <span className="font-body text-sm text-foreground">{skill.content}</span>
+                            <span className="font-body text-sm text-foreground">{name}</span>
                           </div>
                         ))
                       )}
                     </div>
                   </div>
 
-                  {/* On-Demand Traits */}
                   <div className="glass-tile p-6">
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center">
@@ -333,13 +323,13 @@ const EvolutionPage = () => {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      {onDemandSkills.length === 0 ? (
+                      {uniqueTraits.length === 0 ? (
                         <p className="text-muted-foreground font-body text-sm">No on-demand traits listed yet.</p>
                       ) : (
-                        onDemandSkills.map((skill) => (
-                          <div key={skill.id} className="flex items-center gap-3">
+                        uniqueTraits.map((name, i) => (
+                          <div key={i} className="flex items-center gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                            <span className="font-body text-sm text-foreground">{skill.content}</span>
+                            <span className="font-body text-sm text-foreground">{name}</span>
                           </div>
                         ))
                       )}
@@ -354,29 +344,21 @@ const EvolutionPage = () => {
               <motion.div key="ai" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.3 }}>
                 <h2 className="font-display text-2xl italic mb-2 text-foreground">AI Disruption Lab</h2>
                 <p className="font-body text-sm text-muted-foreground mb-8">System upgrades — the futuristic edge of the craft</p>
-
                 <div className="grid gap-6">
                   {aiTools.length === 0 ? (
                     <p className="text-muted-foreground font-body text-sm py-8">No AI tools documented yet.</p>
                   ) : (
                     aiTools.map((tool, index) => (
-                      <motion.div
-                        key={tool.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="glass-tile p-6 relative overflow-hidden"
-                      >
+                      <motion.div key={`${tool.project_id}-${tool.tool_id}`} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="glass-tile p-6 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/5 pointer-events-none" />
                         <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full blur-2xl pointer-events-none" />
                         <div className="relative z-10">
                           <div className="flex items-center gap-2 mb-3">
                             <Cpu className="w-4 h-4 text-accent" />
-                            <span className="font-body text-xs tracking-[0.15em] uppercase text-accent">AI Tool</span>
+                            <span className="font-body text-xs tracking-[0.15em] uppercase text-accent">{tool.tool?.name || 'AI Tool'}</span>
                           </div>
-                          <p className="font-body text-sm text-foreground leading-relaxed">{tool.content}</p>
-                          {tool.meta_info && (
-                            <p className="font-body text-xs text-muted-foreground mt-3 italic">{tool.meta_info}</p>
+                          {tool.project?.title && (
+                            <p className="font-body text-sm text-foreground leading-relaxed">Used in: {tool.project.title}</p>
                           )}
                         </div>
                       </motion.div>
@@ -393,23 +375,17 @@ const EvolutionPage = () => {
           <div className="mt-20">
             <h2 className="font-display text-2xl italic mb-2 text-foreground">Foundation Pyramid</h2>
             <p className="font-body text-sm text-muted-foreground mb-8">The philosophical core that anchors all evolution</p>
-
             <div className="space-y-8">
               {philosophies.map((philosophy) => (
                 <div key={philosophy.id} className="space-y-4">
-                  {/* Apex – Framework */}
                   <div className="glass-tile p-6 max-w-md mx-auto text-center border-accent/30">
                     <span className="font-body text-[10px] tracking-[0.3em] uppercase text-accent">Framework</span>
                     <p className="font-body text-sm text-foreground mt-2 leading-relaxed">{philosophy.framework_statement}</p>
                   </div>
-
-                  {/* Middle – Ethic */}
                   <div className="glass-tile p-6 max-w-lg mx-auto text-center border-primary/30">
                     <span className="font-body text-[10px] tracking-[0.3em] uppercase text-primary">Ethic</span>
                     <p className="font-body text-sm text-foreground mt-2 leading-relaxed">{philosophy.ethic_statement}</p>
                   </div>
-
-                  {/* Base – Value */}
                   <div className="glass-tile p-6 max-w-xl mx-auto text-center border-secondary/30">
                     <span className="font-body text-[10px] tracking-[0.3em] uppercase text-secondary">Value</span>
                     <p className="font-body text-sm text-foreground mt-2 leading-relaxed">{philosophy.value_statement}</p>

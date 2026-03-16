@@ -66,6 +66,21 @@ export type Database = {
           },
         ]
       }
+      ai_tools_library: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       alchemy_elements: {
         Row: {
           id: string
@@ -438,37 +453,156 @@ export type Database = {
           },
         ]
       }
-      project_details: {
+      project_ai_tools: {
         Row: {
-          content: string | null
-          created_at: string | null
-          id: string
-          meta_info: string | null
-          project_id: string | null
-          type: string | null
+          project_id: string
+          tool_id: string
         }
         Insert: {
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          meta_info?: string | null
-          project_id?: string | null
-          type?: string | null
+          project_id: string
+          tool_id: string
         }
         Update: {
-          content?: string | null
-          created_at?: string | null
-          id?: string
-          meta_info?: string | null
-          project_id?: string | null
-          type?: string | null
+          project_id?: string
+          tool_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "project_details_project_id_fkey"
+            foreignKeyName: "project_ai_tools_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_ai_tools_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "ai_tools_library"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_failures: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          learning: string | null
+          project_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          learning?: string | null
+          project_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          learning?: string | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_failures_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_proud_moments: {
+        Row: {
+          content: string
+          created_at: string | null
+          gratitude: string | null
+          id: string
+          project_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          gratitude?: string | null
+          id?: string
+          project_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          gratitude?: string | null
+          id?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_proud_moments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_skills: {
+        Row: {
+          project_id: string
+          skill_id: string
+        }
+        Insert: {
+          project_id: string
+          skill_id: string
+        }
+        Update: {
+          project_id?: string
+          skill_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_skills_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills_library"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_traits: {
+        Row: {
+          project_id: string
+          trait_id: string
+        }
+        Insert: {
+          project_id: string
+          trait_id: string
+        }
+        Update: {
+          project_id?: string
+          trait_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_traits_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_traits_trait_id_fkey"
+            columns: ["trait_id"]
+            isOneToOne: false
+            referencedRelation: "traits_library"
             referencedColumns: ["id"]
           },
         ]
@@ -554,6 +688,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      skills_library: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      traits_library: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       weekly_pulse: {
         Row: {

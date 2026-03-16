@@ -193,11 +193,18 @@ const ManifestMode = () => {
         if (error) throw error;
 
         // Also store detail if project linked
-        if (selectedProjectId && (category === 'Proud Moment' || category === 'Failure')) {
-          await supabase.from('project_details').insert({
+        if (selectedProjectId && category === 'Proud Moment') {
+          await supabase.from('project_proud_moments').insert({
             project_id: selectedProjectId,
-            type: category.toLowerCase().replace(' ', '_'),
-            content: learningsOrGratitude, meta_info: JSON.stringify(meta),
+            content: description,
+            gratitude: learningsOrGratitude || null,
+          });
+        }
+        if (selectedProjectId && category === 'Failure') {
+          await supabase.from('project_failures').insert({
+            project_id: selectedProjectId,
+            content: description,
+            learning: learningsOrGratitude || null,
           });
         }
       }
