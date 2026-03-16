@@ -19,6 +19,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/pillar/evolution" element={<EvolutionPage />} />
           <Route path="/pillar/:slug" element={<PillarPage />} />
           <Route path="/shakti-admin" element={<ShaktiAdmin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
