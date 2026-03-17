@@ -83,21 +83,33 @@ export type Database = {
       }
       alchemy_elements: {
         Row: {
+          category: string | null
+          daily_target: string | null
+          function_summary: string | null
           id: string
           image_url: string | null
           name: string
+          symbol: string | null
           type: string | null
         }
         Insert: {
+          category?: string | null
+          daily_target?: string | null
+          function_summary?: string | null
           id?: string
           image_url?: string | null
           name: string
+          symbol?: string | null
           type?: string | null
         }
         Update: {
+          category?: string | null
+          daily_target?: string | null
+          function_summary?: string | null
           id?: string
           image_url?: string | null
           name?: string
+          symbol?: string | null
           type?: string | null
         }
         Relationships: []
@@ -241,6 +253,94 @@ export type Database = {
           embedding?: string | null
           id?: string
           metadata?: Json | null
+        }
+        Relationships: []
+      }
+      element_recipes: {
+        Row: {
+          element_id: string
+          recipe_id: string
+        }
+        Insert: {
+          element_id: string
+          recipe_id: string
+        }
+        Update: {
+          element_id?: string
+          recipe_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "element_recipes_element_id_fkey"
+            columns: ["element_id"]
+            isOneToOne: false
+            referencedRelation: "alchemy_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "element_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "favorite_recipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "element_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredient_elements: {
+        Row: {
+          element_id: string
+          ingredient_id: string
+        }
+        Insert: {
+          element_id: string
+          ingredient_id: string
+        }
+        Update: {
+          element_id?: string
+          ingredient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ingredient_elements_element_id_fkey"
+            columns: ["element_id"]
+            isOneToOne: false
+            referencedRelation: "alchemy_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ingredient_elements_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ingredients: {
+        Row: {
+          created_at: string | null
+          id: string
+          image_url: string | null
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
         }
         Relationships: []
       }
