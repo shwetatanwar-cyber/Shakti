@@ -17,7 +17,7 @@ interface Recipe {
   name: string;
   image_url: string | null;
   instructions: string | null;
-  nutrition_profile: Record<string, unknown> | null;
+  nutrition_profile: unknown;
 }
 
 interface WellnessExperiment {
