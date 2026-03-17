@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { Activity, Beaker, Clock, Utensils, ChevronRight, X } from 'lucide-react';
+import { Activity, Beaker, Utensils, ChevronRight, X } from 'lucide-react';
 
 interface AlchemyElement {
   id: string;
