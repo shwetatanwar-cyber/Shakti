@@ -229,10 +229,6 @@ const AlchemyPage = () => {
     { id: 'wellness', label: 'Wellness Lab', icon: Activity },
   ];
 
-  const ritualStreak = rituals.length;
-  const avgEnergy = rituals.length > 0
-    ? Math.round(rituals.reduce((acc, r) => acc + (r.energy_level || 0), 0) / rituals.length)
-    : 0;
 
   return (
     <div className="min-h-screen relative">
