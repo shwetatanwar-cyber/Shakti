@@ -178,6 +178,7 @@ const AlchemyPage = () => {
     setLogSaving(false);
   };
 
+  const handleElementClick = useCallback(async (element: AlchemyElement) => {
     setSelectedElement(element);
     setModalLoading(true);
     setModalIngredients([]);
