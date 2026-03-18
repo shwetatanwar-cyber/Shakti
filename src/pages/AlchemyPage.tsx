@@ -53,15 +53,7 @@ interface NonNegotiableStat {
   unit: string | null;
 }
 
-// Known IDs from the database
-const MOVEMENT_IDS = {
-  SURYA_NAMASKAR: '367efe1e-df17-40d6-977a-5bfe3d9e5745',
-  INVERSION: '8065caf6-3471-4053-83c8-a604d0c3e064',
-};
-const WELLNESS_IDS = {
-  ABHYANGA: '53674c5c-924a-4ec9-989b-2ff9b801f397',
-};
-
+// Well-known biochemistry classifications
 // Well-known biochemistry classifications
 const FAT_SOLUBLE_SYMBOLS = ['A', 'D', 'E', 'K'];
 const MACRO_MINERAL_SYMBOLS = ['Ca', 'Mg', 'Na', 'K+'];
