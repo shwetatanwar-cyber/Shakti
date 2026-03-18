@@ -216,27 +216,143 @@ const AlchemyPage = () => {
           </p>
         </motion.div>
 
-        {/* Daily Non-Negotiables Status Bar */}
+        {/* Daily Non-Negotiables — Horizontal Scroll Cards */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mb-10">
-          <div className="overflow-x-auto pb-2 scrollbar-hide">
-            <div className="flex gap-4 min-w-max">
-              <div className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[hsl(175,60%,45%)/0.2] bg-[hsl(200,15%,8%)/0.6] backdrop-blur-sm">
-                <Activity className="w-4 h-4 text-[hsl(175,60%,45%)]" />
-                <span className="font-body text-xs tracking-wider uppercase text-[hsl(38,30%,60%)]">Daily Non-Negotiables</span>
+          <div className="flex items-center gap-3 mb-5">
+            <Activity className="w-4 h-4 text-[hsl(175,60%,45%)]" />
+            <span className="font-body text-xs tracking-[0.3em] uppercase text-[hsl(38,30%,60%)]">Daily Non-Negotiables</span>
+          </div>
+          <ScrollArea className="w-full">
+            <div className="flex gap-5 pb-4 px-1">
+              {nonNegotiables.map((stat, idx) => {
+                const meta = NON_NEGOTIABLE_META[stat.name || ''];
+                if (!meta) return null;
+                const Icon = meta.icon;
+                const formatValue = () => {
+                  if (stat.name === 'Abhyanga') return `${stat.weekly_avg ?? 0}/7 Days`;
+                  return `${stat.weekly_avg ?? 0} ${stat.unit === 'reps' ? 'Reps' : 'Mins'}`;
+                };
+                return (
+                  <motion.div
+                    key={stat.name}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + idx * 0.1, duration: 0.4 }}
+                    className="min-w-[280px] max-w-[320px] flex-shrink-0 rounded-2xl border bg-[hsl(200,15%,8%)/0.7] backdrop-blur-sm p-5 transition-all duration-500 hover:shadow-[0_0_30px_-5px_var(--glow)] group"
+                    style={{ '--glow': meta.color, borderColor: `${meta.color}20` } as React.CSSProperties}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center border"
+                        style={{ borderColor: `${meta.color}40`, background: `${meta.color}12` }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color: meta.color }} />
+                      </div>
+                      <h3 className="font-display text-lg text-[hsl(38,30%,90%)] leading-tight">{stat.name}</h3>
+                    </div>
+                    <p className="font-body text-xs text-[hsl(38,30%,50%)] leading-relaxed mb-4 line-clamp-2">
+                      {meta.description}
+                    </p>
+                    <div className="flex items-center justify-between pt-3 border-t border-[hsl(38,30%,20%)/0.3]">
+                      <span className="font-body text-[10px] tracking-[0.15em] uppercase text-[hsl(38,30%,45%)]">
+                        {meta.statLabel}
+                      </span>
+                      <span className="font-body text-sm font-semibold" style={{ color: meta.color }}>
+                        {formatValue()}
+                      </span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </motion.div>
+
+        {/* Daily Log */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }} className="mb-12">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-[hsl(175,60%,45%)] animate-pulse" />
+              <span className="font-body text-xs tracking-[0.3em] uppercase text-[hsl(38,30%,60%)]">
+                Daily Log — {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            </div>
+            {logSaved && (
+              <span className="flex items-center gap-1 text-[hsl(175,60%,50%)] font-body text-xs">
+                <Check className="w-3 h-3" /> Saved
+              </span>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Surya Namaskar */}
+            <div className="rounded-xl border border-[hsl(30,80%,50%)/0.2] bg-[hsl(200,15%,8%)/0.6] backdrop-blur-sm p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Sun className="w-4 h-4 text-[hsl(30,80%,55%)]" />
+                <span className="font-body text-sm text-[hsl(38,30%,85%)]">Surya Namaskar</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[hsl(38,30%,30%)/0.2] bg-[hsl(200,15%,8%)/0.4]">
-                <span className="font-body text-xs text-[hsl(38,30%,50%)]">Streak:</span>
-                <span className="font-body text-sm font-medium text-[hsl(175,60%,50%)]">{ritualStreak} days</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[hsl(38,30%,30%)/0.2] bg-[hsl(200,15%,8%)/0.4]">
-                <span className="font-body text-xs text-[hsl(38,30%,50%)]">Avg Energy:</span>
-                <span className="font-body text-sm font-medium text-[hsl(30,80%,55%)]">{avgEnergy}/10</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl border border-[hsl(175,60%,45%)/0.15] bg-[hsl(200,15%,8%)/0.4]">
-                <span className="font-body text-xs text-[hsl(38,30%,50%)]">Status:</span>
-                <span className="font-body text-xs font-medium text-[hsl(175,60%,50%)]">Active</span>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={suryaReps}
+                  onChange={(e) => setSuryaReps(e.target.value)}
+                  className="w-full bg-[hsl(200,15%,12%)] border border-[hsl(38,30%,25%)/0.3] rounded-lg px-3 py-2 text-sm text-[hsl(38,30%,90%)] font-body placeholder:text-[hsl(38,30%,30%)] focus:outline-none focus:border-[hsl(30,80%,50%)/0.5] transition-colors"
+                />
+                <span className="font-body text-xs text-[hsl(38,30%,45%)] whitespace-nowrap">Reps</span>
               </div>
             </div>
+
+            {/* 5 Minutes Inversion */}
+            <div className="rounded-xl border border-[hsl(175,60%,45%)/0.2] bg-[hsl(200,15%,8%)/0.6] backdrop-blur-sm p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Timer className="w-4 h-4 text-[hsl(175,60%,45%)]" />
+                <span className="font-body text-sm text-[hsl(38,30%,85%)]">Inversion</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  value={inversionMins}
+                  onChange={(e) => setInversionMins(e.target.value)}
+                  className="w-full bg-[hsl(200,15%,12%)] border border-[hsl(38,30%,25%)/0.3] rounded-lg px-3 py-2 text-sm text-[hsl(38,30%,90%)] font-body placeholder:text-[hsl(38,30%,30%)] focus:outline-none focus:border-[hsl(175,60%,45%)/0.5] transition-colors"
+                />
+                <span className="font-body text-xs text-[hsl(38,30%,45%)] whitespace-nowrap">Mins</span>
+              </div>
+            </div>
+
+            {/* Abhyanga */}
+            <div className="rounded-xl border border-[hsl(270,50%,50%)/0.2] bg-[hsl(200,15%,8%)/0.6] backdrop-blur-sm p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Droplets className="w-4 h-4 text-[hsl(270,50%,60%)]" />
+                <span className="font-body text-sm text-[hsl(38,30%,85%)]">Abhyanga</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-body text-xs text-[hsl(38,30%,45%)]">{abhyangaDone ? 'Completed' : 'Not yet'}</span>
+                <Switch
+                  checked={abhyangaDone}
+                  onCheckedChange={setAbhyangaDone}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Save button */}
+          <div className="flex justify-end mt-4">
+            <button
+              disabled={logSaving || (!suryaReps && !inversionMins && !abhyangaDone)}
+              onClick={handleSaveLog}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-body text-sm tracking-wide border border-[hsl(175,60%,45%)/0.4] bg-[hsl(175,60%,45%)/0.1] text-[hsl(175,60%,45%)] hover:bg-[hsl(175,60%,45%)/0.2] transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {logSaving ? (
+                <div className="w-4 h-4 border-2 border-[hsl(175,60%,45%)/0.3] border-t-[hsl(175,60%,45%)] rounded-full animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+              {logSaving ? 'Saving…' : 'Log Today'}
+            </button>
           </div>
         </motion.div>
 
