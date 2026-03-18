@@ -2,8 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import { Activity, Beaker, Utensils, ChevronRight, X } from 'lucide-react';
+import { Activity, Beaker, Utensils, ChevronRight, X, Sun, Timer, Droplets, Check, Save } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Switch } from '@/components/ui/switch';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { toast } from 'sonner';
 
 interface AlchemyElement {
   id: string;
@@ -44,9 +47,45 @@ interface Ingredient {
   image_url: string | null;
 }
 
+interface NonNegotiableStat {
+  name: string | null;
+  weekly_avg: number | null;
+  unit: string | null;
+}
+
+// Known IDs from the database
+const MOVEMENT_IDS = {
+  SURYA_NAMASKAR: '367efe1e-df17-40d6-977a-5bfe3d9e5745',
+  INVERSION: '8065caf6-3471-4053-83c8-a604d0c3e064',
+};
+const WELLNESS_IDS = {
+  ABHYANGA: '53674c5c-924a-4ec9-989b-2ff9b801f397',
+};
+
 // Well-known biochemistry classifications
 const FAT_SOLUBLE_SYMBOLS = ['A', 'D', 'E', 'K'];
 const MACRO_MINERAL_SYMBOLS = ['Ca', 'Mg', 'Na', 'K+'];
+
+const NON_NEGOTIABLE_META: Record<string, { icon: typeof Sun; description: string; color: string; statLabel: string }> = {
+  'Surya Namaskar': {
+    icon: Sun,
+    description: 'Ancient solar salutation sequence. A complete practice uniting breath, movement, and devotion.',
+    color: 'hsl(30,80%,55%)',
+    statLabel: 'Weekly Avg',
+  },
+  '5 Minutes Inversion': {
+    icon: Timer,
+    description: 'Gravitational reset. Inversions reverse blood flow, decompress the spine, and calm the nervous system.',
+    color: 'hsl(175,60%,45%)',
+    statLabel: 'Weekly Avg',
+  },
+  'Abhyanga': {
+    icon: Droplets,
+    description: 'Self-massage with warm oil. A Dinacharya ritual for lymphatic flow, skin nourishment, and grounding.',
+    color: 'hsl(270,50%,60%)',
+    statLabel: 'Completed',
+  },
+};
 
 const AlchemyBackground = () => (
   <div className="fixed inset-0 z-0">
@@ -62,6 +101,7 @@ const AlchemyPage = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [experiments, setExperiments] = useState<WellnessExperiment[]>([]);
   const [rituals, setRituals] = useState<DailyRitual[]>([]);
+  const [nonNegotiables, setNonNegotiables] = useState<NonNegotiableStat[]>([]);
   const [selectedElement, setSelectedElement] = useState<AlchemyElement | null>(null);
   const [modalIngredients, setModalIngredients] = useState<Ingredient[]>([]);
   const [modalRecipes, setModalRecipes] = useState<Recipe[]>([]);
@@ -69,19 +109,28 @@ const AlchemyPage = () => {
   const [activeSection, setActiveSection] = useState('periodic');
   const [loading, setLoading] = useState(true);
 
+  // Daily log state
+  const [suryaReps, setSuryaReps] = useState<string>('');
+  const [inversionMins, setInversionMins] = useState<string>('');
+  const [abhyangaDone, setAbhyangaDone] = useState(false);
+  const [logSaving, setLogSaving] = useState(false);
+  const [logSaved, setLogSaved] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const [elemRes, recRes, wellRes, ritRes] = await Promise.all([
+      const [elemRes, recRes, wellRes, ritRes, nnRes] = await Promise.all([
         supabase.from('alchemy_elements').select('*').order('type', { ascending: true }),
         supabase.from('recipes').select('*').limit(12),
         supabase.from('wellness_library').select('*'),
         supabase.from('daily_rituals').select('*').order('date', { ascending: false }).limit(7),
+        supabase.from('non_negotiable_stats').select('*'),
       ]);
       if (elemRes.data) setElements(elemRes.data);
       if (recRes.data) setRecipes(recRes.data);
       if (wellRes.data) setExperiments(wellRes.data);
       if (ritRes.data) setRituals(ritRes.data);
+      if (nnRes.data) setNonNegotiables(nnRes.data as NonNegotiableStat[]);
       setLoading(false);
     };
     fetchData();
