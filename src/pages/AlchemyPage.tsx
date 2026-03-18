@@ -136,7 +136,48 @@ const AlchemyPage = () => {
     fetchData();
   }, []);
 
-  const handleElementClick = useCallback(async (element: AlchemyElement) => {
+  const handleSaveLog = async () => {
+    setLogSaving(true);
+    const inserts = [];
+
+    if (suryaReps && Number(suryaReps) > 0) {
+      inserts.push(
+        supabase.from('activity_logs').insert({
+          movement_id: '367efe1e-df17-40d6-977a-5bfe3d9e5745',
+          metrics: { reps: Number(suryaReps) },
+        })
+      );
+    }
+    if (inversionMins && Number(inversionMins) > 0) {
+      inserts.push(
+        supabase.from('activity_logs').insert({
+          movement_id: '8065caf6-3471-4053-83c8-a604d0c3e064',
+          metrics: { minutes: Number(inversionMins) },
+        })
+      );
+    }
+    if (abhyangaDone) {
+      inserts.push(
+        supabase.from('activity_logs').insert({
+          wellness_id: '53674c5c-924a-4ec9-989b-2ff9b801f397',
+        })
+      );
+    }
+
+    const results = await Promise.all(inserts);
+    const hasError = results.some((r) => r.error);
+    if (hasError) {
+      toast.error('Failed to save some entries');
+    } else {
+      toast.success('Daily log saved');
+      setLogSaved(true);
+      setSuryaReps('');
+      setInversionMins('');
+      setAbhyangaDone(false);
+    }
+    setLogSaving(false);
+  };
+
     setSelectedElement(element);
     setModalLoading(true);
     setModalIngredients([]);
