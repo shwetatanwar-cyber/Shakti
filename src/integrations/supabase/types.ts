@@ -999,6 +999,14 @@ export type Database = {
           },
         ]
       }
+      non_negotiable_stats: {
+        Row: {
+          name: string | null
+          unit: string | null
+          weekly_avg: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
