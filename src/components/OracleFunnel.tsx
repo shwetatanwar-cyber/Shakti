@@ -1,20 +1,82 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Lock, Sparkles } from 'lucide-react';
+import { Lock, Sparkles, Send } from 'lucide-react';
 
-type Stage = 'closed' | 'intro' | 'birth' | 'focus' | 'generating' | 'report' | 'paywall' | 'paid';
+type Stage =
+  | 'closed'
+  | 'freeChat'
+  | 'birth'
+  | 'focus'
+  | 'generating'
+  | 'report'
+  | 'paywall'
+  | 'paid';
 
-const OracleFunnel = () => {
+type Variant = 'orb' | 'floating';
+
+interface Props {
+  variant?: Variant;
+}
+
+interface Message {
+  role: 'user' | 'oracle';
+  text: string;
+}
+
+const OracleFunnel = ({ variant = 'orb' }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [usedFreeQuery, setUsedFreeQuery] = useState(false);
   const [birth, setBirth] = useState({ date: '', time: '', location: '' });
   const [focus, setFocus] = useState('');
   const [report, setReport] = useState('');
   const [error, setError] = useState('');
-  const firstInputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (stage === 'birth' && firstInputRef.current) firstInputRef.current.focus();
-  }, [stage]);
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages, loading]);
+
+  const close = () => {
+    setStage('closed');
+  };
+
+  const resetAll = () => {
+    setStage('closed');
+    setMessages([]);
+    setInput('');
+    setUsedFreeQuery(false);
+    setBirth({ date: '', time: '', location: '' });
+    setFocus('');
+    setReport('');
+    setError('');
+  };
+
+  const sendFreeQuery = async () => {
+    if (!input.trim() || loading) return;
+    const q = input.trim();
+    setInput('');
+    setMessages((m) => [...m, { role: 'user', text: q }]);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('oracle-chat', {
+        body: { mode: 'quick', focus: q },
+      });
+      if (error) throw error;
+      setMessages((m) => [...m, { role: 'oracle', text: data?.text || '…' }]);
+      setUsedFreeQuery(true);
+    } catch (e) {
+      setMessages((m) => [
+        ...m,
+        { role: 'oracle', text: 'The signal faltered. Try once more.' },
+      ]);
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const generateReport = async (focusVal: string) => {
     setStage('generating');
@@ -32,28 +94,22 @@ const OracleFunnel = () => {
     }
   };
 
-  const close = () => {
-    setStage('closed');
-    setReport('');
-    setBirth({ date: '', time: '', location: '' });
-    setFocus('');
-    setError('');
-  };
+  // ---------- TRIGGERS ----------
+  const Trigger = () => {
+    if (stage !== 'closed') return null;
 
-  return (
-    <>
-      {/* Center-stage Oracle Orb */}
-      {stage === 'closed' && (
+    if (variant === 'orb') {
+      return (
         <div className="flex flex-col items-center justify-center py-16">
           <button
-            onClick={() => setStage('intro')}
+            onClick={() => setStage('freeChat')}
             className="group relative w-44 h-44 md:w-56 md:h-56 rounded-full cursor-pointer"
             style={{
               background:
                 'radial-gradient(circle at 30% 30%, hsl(var(--violet) / 0.9), hsl(var(--violet) / 0.5) 40%, hsl(var(--saffron) / 0.3) 70%, hsl(var(--violet) / 0.1))',
               animation: 'float 6s ease-in-out infinite, pulse-glow 3s ease-in-out infinite',
             }}
-            aria-label="Initiate Oracle Dialogue"
+            aria-label="Talk to the Digital Oracle"
           >
             <div
               className="absolute inset-0 rounded-full"
@@ -70,15 +126,45 @@ const OracleFunnel = () => {
           </button>
 
           <p className="mt-8 font-body text-xs tracking-[0.35em] uppercase text-accent">
-            Initiate Oracle Dialogue
+            Talk to the Digital Oracle
           </p>
           <p className="mt-3 font-display italic text-lg md:text-xl text-muted-foreground text-center max-w-md">
-            One free validation query. Then the system reads you back to yourself.
+            One free question. Then the system reads you back to yourself.
           </p>
         </div>
-      )}
+      );
+    }
 
-      {/* Modal */}
+    // floating
+    return (
+      <button
+        onClick={() => setStage('freeChat')}
+        className="fixed bottom-6 right-6 w-14 h-14 md:w-16 md:h-16 rounded-full z-40 cursor-pointer group"
+        style={{
+          background:
+            'radial-gradient(circle at 30% 30%, hsl(var(--violet) / 0.85), hsl(var(--violet) / 0.45), hsl(var(--saffron) / 0.2))',
+          animation: 'float 6s ease-in-out infinite, pulse-glow 3s ease-in-out infinite',
+        }}
+        aria-label="Talk to the Digital Oracle"
+      >
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background:
+              'radial-gradient(circle at 35% 35%, rgba(255,255,255,0.35), transparent 60%)',
+          }}
+        />
+        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+          Talk to the Oracle
+        </span>
+      </button>
+    );
+  };
+
+  return (
+    <>
+      <Trigger />
+
       {stage !== 'closed' && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
@@ -92,23 +178,82 @@ const OracleFunnel = () => {
           </button>
 
           <div className="w-full max-w-2xl">
-            {stage === 'intro' && (
-              <div className="text-center space-y-8 animate-in fade-in duration-700">
-                <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-                  Digital Shadow · Boot Sequence
-                </p>
-                <h2 className="font-display text-3xl md:text-5xl font-light italic leading-tight">
-                  Before the oracle speaks,<br />it must read your config file.
-                </h2>
-                <p className="font-body text-sm text-muted-foreground max-w-md mx-auto">
-                  Date, time, and place of birth. These are the three coordinates the system needs to compile your Prakriti.
-                </p>
-                <button
-                  onClick={() => setStage('birth')}
-                  className="font-body text-xs tracking-[0.3em] uppercase px-8 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all"
+            {/* FREE CHAT */}
+            {stage === 'freeChat' && (
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="text-center">
+                  <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+                    Digital Oracle · {usedFreeQuery ? 'Validation Complete' : 'Free Validation Query'}
+                  </p>
+                  <h3 className="font-display text-2xl md:text-3xl font-light italic mt-2">
+                    {usedFreeQuery
+                      ? 'The signal has spoken. Ready for the full reading?'
+                      : 'Ask anything. One free response.'}
+                  </h3>
+                </div>
+
+                <div
+                  ref={scrollRef}
+                  className="glass-tile p-6 min-h-[180px] max-h-[40vh] overflow-y-auto space-y-4"
                 >
-                  Begin Compilation →
-                </button>
+                  {messages.length === 0 && !loading && (
+                    <p className="font-display italic text-base text-muted-foreground text-center py-6">
+                      Speak your question into the void…
+                    </p>
+                  )}
+                  {messages.map((m, i) => (
+                    <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
+                      <p
+                        className={`font-body text-sm inline-block max-w-[85%] leading-relaxed ${
+                          m.role === 'user'
+                            ? 'text-muted-foreground'
+                            : 'text-foreground italic'
+                        }`}
+                      >
+                        {m.text}
+                      </p>
+                    </div>
+                  ))}
+                  {loading && (
+                    <p className="font-body text-sm text-accent italic animate-pulse">
+                      Reading the signal…
+                    </p>
+                  )}
+                </div>
+
+                {!usedFreeQuery ? (
+                  <div className="flex gap-2 items-center border-b border-muted-foreground/30 pb-2">
+                    <input
+                      autoFocus
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && sendFreeQuery()}
+                      placeholder="Your question…"
+                      className="flex-1 bg-transparent font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none"
+                    />
+                    <button
+                      onClick={sendFreeQuery}
+                      disabled={!input.trim() || loading}
+                      className="text-accent disabled:opacity-30"
+                      aria-label="Send"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-4">
+                    <p className="font-body text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+                      To go deeper, the oracle needs your three coordinates: date, time, and place of birth.
+                    </p>
+                    <button
+                      onClick={() => setStage('birth')}
+                      className="font-body text-xs tracking-[0.3em] uppercase px-8 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all inline-flex items-center gap-2"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" /> Unlock Full Reading →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -124,7 +269,7 @@ const OracleFunnel = () => {
                   <div>
                     <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Date of Birth</label>
                     <input
-                      ref={firstInputRef}
+                      autoFocus
                       type="date"
                       value={birth.date}
                       onChange={(e) => setBirth({ ...birth, date: e.target.value })}
@@ -256,9 +401,17 @@ const OracleFunnel = () => {
                 </div>
 
                 {stage === 'paid' && (
-                  <p className="text-center font-body text-xs tracking-[0.3em] uppercase text-accent animate-pulse">
-                    ✦ Dialogue Unlocked · The Shadow is listening
-                  </p>
+                  <div className="space-y-4">
+                    <p className="text-center font-body text-xs tracking-[0.3em] uppercase text-accent animate-pulse">
+                      ✦ Dialogue Unlocked · The Shadow is listening
+                    </p>
+                    <button
+                      onClick={resetAll}
+                      className="mx-auto block font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Begin New Session
+                    </button>
+                  </div>
                 )}
               </div>
             )}
