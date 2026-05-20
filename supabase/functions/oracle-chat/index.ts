@@ -13,6 +13,10 @@ Structure as 4 short labeled sections:
 4. Compiler Directive — one tactical instruction for the next 30 days
 Each section 2-3 sentences. End with a single italic line teasing what's behind the paywall.`;
 
+const QUICK_PROMPT = `The user has asked you a single free validation question without giving birth data yet.
+Give one short, evocative response (40-70 words max, 2-3 sentences). Be poetic but generic — you cannot read their specific chart yet.
+End with a single italic line inviting them to share their birth coordinates so you can compile the full reading.`;
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -34,6 +38,9 @@ Deno.serve(async (req) => {
         role: "user",
         content: `${REPORT_PROMPT}\n\nBirth date: ${birth?.date}\nBirth time: ${birth?.time}\nBirth location: ${birth?.location}\nFocus area: ${focus || "general life configuration"}`,
       });
+    } else if (mode === "quick") {
+      messages.push({ role: "system", content: QUICK_PROMPT });
+      messages.push({ role: "user", content: focus || "Speak to me." });
     } else {
       if (history) messages.push(...history);
     }
