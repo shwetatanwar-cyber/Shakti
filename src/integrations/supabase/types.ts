@@ -256,6 +256,30 @@ export type Database = {
         }
         Relationships: []
       }
+      digital_shadow_memory: {
+        Row: {
+          content: string
+          created_at: string | null
+          embedding: string | null
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          embedding?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
       element_recipes: {
         Row: {
           element_id: string
@@ -711,10 +735,12 @@ export type Database = {
         Row: {
           brief: string | null
           created_at: string | null
+          domain: string[] | null
           end_date: string | null
           full_description: string | null
           id: string
           location_id: string | null
+          market: string[] | null
           outcome: string | null
           start_date: string | null
           strategy: string | null
@@ -723,10 +749,12 @@ export type Database = {
         Insert: {
           brief?: string | null
           created_at?: string | null
+          domain?: string[] | null
           end_date?: string | null
           full_description?: string | null
           id?: string
           location_id?: string | null
+          market?: string[] | null
           outcome?: string | null
           start_date?: string | null
           strategy?: string | null
@@ -735,10 +763,12 @@ export type Database = {
         Update: {
           brief?: string | null
           created_at?: string | null
+          domain?: string[] | null
           end_date?: string | null
           full_description?: string | null
           id?: string
           location_id?: string | null
+          market?: string[] | null
           outcome?: string | null
           start_date?: string | null
           strategy?: string | null
@@ -1009,7 +1039,19 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      match_shadow_memory: {
+        Args: {
+          match_count?: number
+          match_threshold: number
+          query_embedding: string
+        }
+        Returns: {
+          content: string
+          id: string
+          metadata: Json
+          similarity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
