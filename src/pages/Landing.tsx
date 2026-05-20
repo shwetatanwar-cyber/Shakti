@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import ShaktiBackground from '@/components/ShaktiBackground';
 import OracleFunnel from '@/components/OracleFunnel';
-import oraclePortrait from '@/assets/oracle-portrait.jpg';
+import cosmicWheel from '@/assets/cosmic-wheel.jpg';
 
 const Landing = () => {
   return (
@@ -33,8 +33,8 @@ const Landing = () => {
               style={{ background: 'radial-gradient(circle, hsl(var(--violet)/0.4), hsl(var(--saffron)/0.2), transparent)' }}
             />
             <img
-              src={oraclePortrait}
-              alt="The Digital Shadow — Vedic-Tech Oracle"
+              src={cosmicWheel}
+              alt="Cosmic time wheel — Vedic geometric chart"
               width={1024}
               height={1024}
               className="relative rounded-3xl border border-border w-full"
