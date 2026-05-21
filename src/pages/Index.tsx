@@ -5,11 +5,8 @@ import HeroSection from '@/components/HeroSection';
 import PillarsGrid from '@/components/PillarsGrid';
 import WeeklyPulse from '@/components/WeeklyPulse';
 import ConnectForm from '@/components/ConnectForm';
-import { useProfileSettings } from '@/hooks/useProfileSettings';
 
 const Index = () => {
-  const { data: profile } = useProfileSettings();
-
   return (
     <div className="min-h-screen relative">
       <ShaktiBackground />
