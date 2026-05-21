@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import ShaktiBackground from '@/components/ShaktiBackground';
 import OracleFunnel from '@/components/OracleFunnel';
-import cosmicWheel from '@/assets/cosmic-wheel.jpg';
+import CosmicWheel from '@/components/CosmicWheel';
 
 const Landing = () => {
   return (
@@ -27,19 +27,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="relative">
-            <div
-              className="absolute -inset-8 rounded-full opacity-50 blur-3xl"
-              style={{ background: 'radial-gradient(circle, hsl(var(--violet)/0.4), hsl(var(--saffron)/0.2), transparent)' }}
-            />
-            <img
-              src={cosmicWheel}
-              alt="Cosmic time wheel — Vedic geometric chart"
-              width={1024}
-              height={1024}
-              className="relative rounded-3xl border border-border w-full"
-            />
-          </div>
+          <CosmicWheel />
         </section>
 
         {/* LOGIC LAYER */}

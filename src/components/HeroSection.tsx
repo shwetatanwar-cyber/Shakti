@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useProfileSettings } from '@/hooks/useProfileSettings';
 import { format } from 'date-fns';
+import oraclePortrait from '@/assets/oracle-portrait.jpg';
 
 const HeroSection = () => {
   const { data: profile, isLoading } = useProfileSettings();
@@ -28,7 +29,7 @@ const HeroSection = () => {
     : null;
 
   return (
-    <div className="glass-tile col-span-12 row-span-2 p-8 md:p-12 relative overflow-hidden min-h-[400px] flex flex-col justify-end">
+    <div className="glass-tile col-span-12 row-span-2 p-8 md:p-12 relative overflow-hidden min-h-[400px] grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-end">
       <div
         className="absolute inset-0 animate-breathe pointer-events-none"
         style={{
@@ -36,7 +37,7 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-10">
+      <div className="relative z-10 order-2 md:order-1">
         {locationDisplay && (
           <div className="mb-2 inline-block relative">
             <button
@@ -89,6 +90,21 @@ const HeroSection = () => {
           into a practice that bridges the ancient and the infinite. This is not a portfolio.
           It is a living record.
         </p>
+      </div>
+
+      <div className="relative z-10 order-1 md:order-2 self-center md:self-end shrink-0">
+        <div
+          className="absolute -inset-4 rounded-full opacity-40 blur-3xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, hsl(var(--violet)/0.5), hsl(var(--saffron)/0.2), transparent)' }}
+        />
+        <img
+          src={oraclePortrait}
+          alt="Portrait of the architect"
+          width={512}
+          height={512}
+          loading="lazy"
+          className="relative rounded-3xl border border-border w-44 h-44 md:w-72 md:h-72 lg:w-80 lg:h-80 object-cover"
+        />
       </div>
     </div>
   );
