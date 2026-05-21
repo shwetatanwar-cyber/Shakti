@@ -5,17 +5,20 @@ You speak with poetic precision, blending Sanskrit/Jyotish vocabulary with syste
 Tone: calm, intimate, mystical-but-grounded. Never generic. Use second person.
 Keep responses tight (120-180 words). Use short paragraphs. No bullet lists unless explicitly asked.`;
 
-const REPORT_PROMPT = `Generate a "System Configuration Report" preview for the user, given their birth data and focus area.
-Structure as 4 short labeled sections:
-1. Prakriti Boot Sequence — their elemental compile signature
-2. Runtime Signal — current planetary process running hot
-3. Friction Layer — where the system throws exceptions
-4. Compiler Directive — one tactical instruction for the next 30 days
-Each section 2-3 sentences. End with a single italic line teasing what's behind the paywall.`;
+const REPORT_PROMPT = `Generate a TWO-PART "System Configuration Report" given their birth data and focus area.
+Return the response in EXACTLY this format, with the literal separator on its own line:
 
-const QUICK_PROMPT = `The user has asked you a single free validation question without giving birth data yet.
-Give one short, evocative response (40-70 words max, 2-3 sentences). Be poetic but generic — you cannot read their specific chart yet.
-End with a single italic line inviting them to share their birth coordinates so you can compile the full reading.`;
+OVERVIEW:
+<A short generic overview, 60-90 words, 2 short paragraphs. Speak directly to them about the broad shape of their configuration and current runtime. Evocative but accessible. End with a single sentence that hints there is more depth available.>
+---LOCKED---
+<The full premium report, structured as 4 labeled sections, each 2-3 sentences:
+1. Prakriti Boot Sequence — elemental compile signature
+2. Runtime Signal — current planetary process running hot
+3. Friction Layer — where exceptions throw
+4. Compiler Directive — one tactical instruction for the next 30 days
+End with a single italic line teasing what's behind continued dialogue.>
+
+Do not add any other text outside this structure.`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -38,9 +41,6 @@ Deno.serve(async (req) => {
         role: "user",
         content: `${REPORT_PROMPT}\n\nBirth date: ${birth?.date}\nBirth time: ${birth?.time}\nBirth location: ${birth?.location}\nFocus area: ${focus || "general life configuration"}`,
       });
-    } else if (mode === "quick") {
-      messages.push({ role: "system", content: QUICK_PROMPT });
-      messages.push({ role: "user", content: focus || "Speak to me." });
     } else {
       if (history) messages.push(...history);
     }
@@ -67,7 +67,16 @@ Deno.serve(async (req) => {
 
     const data = await res.json();
     const text = data.choices?.[0]?.message?.content ?? "";
-    return new Response(JSON.stringify({ text }), {
+
+    let overview = "";
+    let locked = text;
+    if (mode === "report" && text.includes("---LOCKED---")) {
+      const [ovRaw, lkRaw] = text.split("---LOCKED---");
+      overview = ovRaw.replace(/^\s*OVERVIEW:\s*/i, "").trim();
+      locked = lkRaw.trim();
+    }
+
+    return new Response(JSON.stringify({ text, overview, locked }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
