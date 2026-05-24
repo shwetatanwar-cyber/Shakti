@@ -510,6 +510,39 @@ export type Database = {
           },
         ]
       }
+      oracle_consultations: {
+        Row: {
+          birth_date: string
+          birth_location: string
+          birth_time: string
+          consultation_category: string | null
+          created_at: string | null
+          id: string
+          payment_status: string | null
+          session_id: string | null
+        }
+        Insert: {
+          birth_date: string
+          birth_location: string
+          birth_time: string
+          consultation_category?: string | null
+          created_at?: string | null
+          id?: string
+          payment_status?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          birth_date?: string
+          birth_location?: string
+          birth_time?: string
+          consultation_category?: string | null
+          created_at?: string | null
+          id?: string
+          payment_status?: string | null
+          session_id?: string | null
+        }
+        Relationships: []
+      }
       professional_philosophy: {
         Row: {
           created_at: string | null
