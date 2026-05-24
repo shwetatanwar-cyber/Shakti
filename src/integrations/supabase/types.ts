@@ -519,7 +519,9 @@ export type Database = {
           created_at: string | null
           id: string
           payment_status: string | null
+          raw_user_reason: string | null
           session_id: string | null
+          submission_type: string | null
         }
         Insert: {
           birth_date: string
@@ -529,7 +531,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           payment_status?: string | null
+          raw_user_reason?: string | null
           session_id?: string | null
+          submission_type?: string | null
         }
         Update: {
           birth_date?: string
@@ -539,7 +543,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           payment_status?: string | null
+          raw_user_reason?: string | null
           session_id?: string | null
+          submission_type?: string | null
         }
         Relationships: []
       }
