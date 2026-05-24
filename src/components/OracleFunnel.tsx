@@ -90,7 +90,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
       return (
         <div className="flex flex-col items-center justify-center py-16">
           <button
-            onClick={() => setStage('birth')}
+            onClick={() => {
+              trackGAEvent('speak_cta_click', { positioning: 'hero_center' });
+              setStage('birth');
+            }}
             className="group relative w-44 h-44 md:w-56 md:h-56 rounded-full cursor-pointer"
             style={{
               background:
@@ -118,7 +121,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
     }
     return (
       <button
-        onClick={() => setStage('birth')}
+        onClick={() => {
+          trackGAEvent('speak_cta_click', { positioning: 'floating_corner' });
+          setStage('birth');
+        }}
         className="fixed bottom-6 right-6 w-14 h-14 md:w-16 md:h-16 rounded-full z-40 cursor-pointer group"
         style={{
           background:
