@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
+import { trackGAEvent } from '@/utils/analytics';
 
 type Stage =
   | 'closed'
@@ -59,6 +60,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
   const generateReport = async (focusVal: string) => {
     setStage('generating');
     setError('');
+    trackGAEvent('oracle_reason_submit', {
+      submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
+      has_custom_text: focusVal.trim() ? true : false,
+    });
     const started = Date.now();
     try {
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
@@ -85,7 +90,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
       return (
         <div className="flex flex-col items-center justify-center py-16">
           <button
-            onClick={() => setStage('birth')}
+            onClick={() => {
+              trackGAEvent('speak_cta_click', { positioning: 'hero_center' });
+              setStage('birth');
+            }}
             className="group relative w-44 h-44 md:w-56 md:h-56 rounded-full cursor-pointer"
             style={{
               background:
@@ -113,7 +121,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
     }
     return (
       <button
-        onClick={() => setStage('birth')}
+        onClick={() => {
+          trackGAEvent('speak_cta_click', { positioning: 'floating_corner' });
+          setStage('birth');
+        }}
         className="fixed bottom-6 right-6 w-14 h-14 md:w-16 md:h-16 rounded-full z-40 cursor-pointer group"
         style={{
           background:
@@ -188,7 +199,14 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
             </div>
             <button
               disabled={!birth.date || !birth.time || !birth.location}
-              onClick={() => setStage('focus')}
+              onClick={() => {
+                trackGAEvent('birth_details_submit', {
+                  has_date: !!birth.date,
+                  has_time: !!birth.time,
+                  location_region: 'processed',
+                });
+                setStage('focus');
+              }}
               className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Continue →
@@ -349,7 +367,14 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
                       Decode friction, runtime errors, and the compiler directives for your next chapter — plus continued dialogue with the Shadow.
                     </p>
                     <button
-                      onClick={() => setStage('paywall')}
+                      onClick={() => {
+                        trackGAEvent('payment_initiate', {
+                          price_point: 199,
+                          currency: 'INR',
+                          conversion_tier: 'premium_oracle_chat',
+                        });
+                        setStage('paywall');
+                      }}
                       className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
                     >
                       <Sparkles className="w-3.5 h-3.5" /> Unlock for ₹199
