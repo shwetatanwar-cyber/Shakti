@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
+import { trackGAEvent } from '@/utils/analytics';
 
 type Stage =
   | 'closed'
@@ -59,6 +60,10 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
   const generateReport = async (focusVal: string) => {
     setStage('generating');
     setError('');
+    trackGAEvent('oracle_reason_submit', {
+      submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
+      has_custom_text: focusVal.trim() ? true : false,
+    });
     const started = Date.now();
     try {
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
