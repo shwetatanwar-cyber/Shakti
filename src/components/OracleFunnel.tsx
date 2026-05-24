@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
 import { trackGAEvent } from '@/utils/analytics';
+import { toast } from '@/hooks/use-toast';
 
 type Stage =
   | 'closed'
@@ -36,6 +37,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
   const [locked, setLocked] = useState('');
   const [error, setError] = useState('');
   const [calcIdx, setCalcIdx] = useState(0);
+  const [consultationId, setConsultationId] = useState<string | null>(null);
 
   // Rotate calculation steps while generating
   useEffect(() => {
@@ -55,6 +57,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
     setOverview('');
     setLocked('');
     setError('');
+    setConsultationId(null);
   };
 
   const generateReport = async (focusVal: string) => {
@@ -65,6 +68,65 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
       has_custom_text: focusVal.trim() ? true : false,
     });
     const started = Date.now();
+
+    // ---- Persist consultation to Supabase (schema-aligned) ----
+    try {
+      const submissionType = focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan';
+      const rawUserReason = focusVal.trim() ? focusVal.trim() : null;
+
+      // birth.date from <input type="date"> is already YYYY-MM-DD.
+      // birth.time from <input type="time"> is HH:MM — pad to HH:MM:SS.
+      const formattedDate = birth.date; // YYYY-MM-DD
+      const formattedTime =
+        birth.time && birth.time.length === 5 ? `${birth.time}:00` : birth.time;
+
+      const sessionId =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `sess_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
+      const payload = {
+        birth_date: formattedDate,
+        birth_time: formattedTime,
+        birth_location: birth.location.trim(),
+        submission_type: submissionType,
+        raw_user_reason: rawUserReason,
+        consultation_category: submissionType,
+        session_id: sessionId,
+        payment_status: 'pending',
+      };
+
+      const { data: inserted, error: insertError } = await supabase
+        .from('oracle_consultations')
+        .insert([payload])
+        .select('id, session_id')
+        .single();
+
+      if (insertError) {
+        console.error('CRITICAL SUPABASE PIPELINE FAILURE:', insertError);
+        toast({
+          title: 'Could not save your consultation',
+          description: insertError.message ?? 'Unknown database error',
+          variant: 'destructive',
+        });
+      } else if (inserted?.id) {
+        setConsultationId(inserted.id);
+        try {
+          localStorage.setItem('oracle_consultation_id', inserted.id);
+          localStorage.setItem('oracle_session_id', inserted.session_id ?? sessionId);
+        } catch {
+          /* ignore storage errors */
+        }
+      }
+    } catch (dbErr) {
+      console.error('CRITICAL SUPABASE PIPELINE FAILURE:', dbErr);
+      toast({
+        title: 'Consultation save failed',
+        description: (dbErr as Error).message,
+        variant: 'destructive',
+      });
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
         body: { mode: 'report', birth, focus: focusVal },
