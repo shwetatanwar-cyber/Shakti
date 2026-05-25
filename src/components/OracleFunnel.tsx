@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
-import { trackGAEvent } from '@/utils/analytics';
+import { trackGAEvent, trackMetaEvent } from '@/utils/analytics';
 import { toast } from '@/hooks/use-toast';
 
 type Stage =
