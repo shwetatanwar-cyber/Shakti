@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useProfileSettings } from '@/hooks/useProfileSettings';
 import { format } from 'date-fns';
-import oraclePortrait from '@/assets/oracle-portrait.jpg';
+import oraclePortrait from '@/assets/oracle-portrait.webp';
 
 const HeroSection = () => {
   const { data: profile, isLoading } = useProfileSettings();
