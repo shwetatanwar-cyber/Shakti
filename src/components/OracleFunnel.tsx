@@ -67,6 +67,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
       submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
       has_custom_text: focusVal.trim() ? true : false,
     });
+    trackMetaEvent('InitiateCheckout', { content_category: 'Oracle Query Selection' });
     const started = Date.now();
 
     // ---- Persist consultation to Supabase (schema-aligned) ----
