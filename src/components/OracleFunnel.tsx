@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
-import { trackGAEvent } from '@/utils/analytics';
+import { trackGAEvent, trackMetaEvent } from '@/utils/analytics';
 import { toast } from '@/hooks/use-toast';
 
 type Stage =
@@ -67,6 +67,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
       submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
       has_custom_text: focusVal.trim() ? true : false,
     });
+    trackMetaEvent('InitiateCheckout', { content_category: 'Oracle Query Selection' });
     const started = Date.now();
 
     // ---- Persist consultation to Supabase (schema-aligned) ----
@@ -117,6 +118,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
         } catch {
           /* ignore storage errors */
         }
+        trackMetaEvent('Lead', { content_name: 'Birth Details' });
       }
     } catch (dbErr) {
       console.error('CRITICAL SUPABASE PIPELINE FAILURE:', dbErr);
@@ -434,6 +436,11 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
                           price_point: 199,
                           currency: 'INR',
                           conversion_tier: 'premium_oracle_chat',
+                        });
+                        trackMetaEvent('Purchase', {
+                          value: 199.00,
+                          currency: 'INR',
+                          content_name: 'Premium Digital Oracle Report',
                         });
                         setStage('paywall');
                       }}
