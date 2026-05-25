@@ -437,6 +437,11 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
                           currency: 'INR',
                           conversion_tier: 'premium_oracle_chat',
                         });
+                        trackMetaEvent('Purchase', {
+                          value: 199.00,
+                          currency: 'INR',
+                          content_name: 'Premium Digital Oracle Report',
+                        });
                         setStage('paywall');
                       }}
                       className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
