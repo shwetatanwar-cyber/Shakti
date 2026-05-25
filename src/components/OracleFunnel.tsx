@@ -118,6 +118,7 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
         } catch {
           /* ignore storage errors */
         }
+        trackMetaEvent('Lead', { content_name: 'Birth Details' });
       }
     } catch (dbErr) {
       console.error('CRITICAL SUPABASE PIPELINE FAILURE:', dbErr);
