@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import ShaktiBackground from '@/components/ShaktiBackground';
 import OracleFunnel from '@/components/OracleFunnel';
 import CosmicWheel from '@/components/CosmicWheel';
 
 const Landing = () => {
+  const [bottomFormOpen, setBottomFormOpen] = useState(false);
   return (
     <div className="min-h-screen relative">
       <ShaktiBackground />
@@ -88,17 +90,32 @@ const Landing = () => {
           </div>
 
           <div className="pt-2">
-            <OracleFunnel
-              variant="inline"
-              ctaText="Initialize Private Chat"
-              ctaSubtext="First 5 minutes are on us. Break-even on clarity instantly."
-              ctaPosition="footer_inline"
-            />
+            {!bottomFormOpen ? (
+              <div className="w-full max-w-md mx-auto space-y-3">
+                <button
+                  type="button"
+                  onClick={() => setBottomFormOpen(true)}
+                  className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all shadow-lg shadow-accent/30"
+                >
+                  Initialize Private Chat →
+                </button>
+                <p className="text-center font-body text-xs text-muted-foreground">
+                  First 5 minutes are on us. Break-even on clarity instantly.
+                </p>
+              </div>
+            ) : (
+              <OracleFunnel
+                variant="inline"
+                ctaText="Initialize Private Chat"
+                ctaSubtext="First 5 minutes are on us. Break-even on clarity instantly."
+                ctaPosition="footer_inline"
+              />
+            )}
           </div>
         </section>
       </main>
 
-      <footer className="relative z-10 px-4 md:px-8 py-12 mt-20 border-t border-border/30">
+      <footer className="relative z-0 px-4 md:px-8 py-12 mt-20 border-t border-border/30">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
             © Digital Shadow · A living interface
