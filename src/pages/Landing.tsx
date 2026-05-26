@@ -8,47 +8,61 @@ const Landing = () => {
     <div className="min-h-screen relative">
       <ShaktiBackground />
 
-      <main className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 space-y-32">
-        {/* HERO */}
-        <section className="grid md:grid-cols-2 gap-10 items-center">
-          <div className="space-y-6">
+      <main className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 space-y-24 md:space-y-32">
+        {/* BLOCK 1: HERO */}
+        <section className="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+          <div className="space-y-5 md:space-y-6">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-              Vedic-Tech · Prakriti Compiler
+              Vedic-Tech · The Cosmic Blueprint
             </p>
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
-              Your birth chart<br />
-              <span className="italic">is a config file.</span>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
+              Your birth chart is your <span className="italic">user manual.</span>
             </h1>
             <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
-              At the moment you took your first breath, the cosmos compiled an initial configuration — your Prakriti. Most of life's friction is just unread runtime error logs from that compilation.
+              The exact second you were born, the universe generated your personal operating system — your Cosmic Code. Most of your daily struggles aren't failures; they are just glitches from running blind to how you're wired.
             </p>
-            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
-              This is not astrology. This is a diagnostic interface.
+            <p className="font-body text-base md:text-lg text-foreground/90 leading-relaxed max-w-lg italic">
+              This is not fortune-telling. This is your psychological diagnostic report.
             </p>
+
+            <div className="pt-2 md:hidden">
+              <CosmicWheel />
+            </div>
+
+            <div className="pt-4">
+              <OracleFunnel
+                variant="inline"
+                ctaText="Get My Free Reading"
+                ctaSubtext="⚡ Private AI. No human eyes. Instant generation."
+                ctaPosition="hero_inline"
+              />
+            </div>
           </div>
 
-          <CosmicWheel />
+          <div className="hidden md:block">
+            <CosmicWheel />
+          </div>
         </section>
 
-        {/* LOGIC LAYER */}
-        <section className="space-y-12">
+        {/* BLOCK 2: LOGIC LAYER */}
+        <section className="space-y-10 md:space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
               The Logic Layer
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
-              Demystifying the math.
+              Math behind the blueprint.
             </h2>
-            <p className="font-body text-sm md:text-base text-muted-foreground">
-              Vedic astrology is deterministic geometry — a snapshot of nine planetary processes against twelve houses at a single timestamp. It produces a 27-nakshatra DNA string that maps to your biological and psychological software.
+            <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
+              Your birth moment captured 9 cosmic bodies across 12 life areas at one exact timestamp. This creates a highly specific 27-point personality map that reveals your mental and emotional wiring.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { sym: '01', title: 'Inputs', body: 'Date · Time · Latitude · Longitude. Four scalars, processed against ephemeris data.' },
-              { sym: '02', title: 'Computation', body: '9 grahas × 12 bhavas × 27 nakshatras → a unique state vector. No interpretation yet — pure math.' },
-              { sym: '03', title: 'Runtime', body: 'Mahadasha periods cycle this state through time. Your "current moment" is just which process holds the lock.' },
+              { sym: '01', title: 'Raw Inputs', body: 'Date · Time · City · Coordinates. Four fixed data points cross-referenced with real-time astronomical positions.' },
+              { sym: '02', title: 'The Calculation', body: '9 planets × 12 life zones × 27 traits. No guesswork, no generic horoscopes — pure mathematical probability.' },
+              { sym: '03', title: 'Mahadashas', body: 'Planetary shifts activate different parts of your energy over time. Your "current vibe" or sudden anxiety is just a phase requiring specific handling.' },
             ].map((card) => (
               <div key={card.sym} className="glass-tile p-6 space-y-3">
                 <p className="font-display italic text-3xl text-accent">{card.sym}</p>
@@ -59,15 +73,28 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* CTA — ORACLE ORB */}
-        <section className="text-center space-y-6">
-          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-            Initiate
-          </p>
-          <h2 className="font-display text-4xl md:text-5xl font-light italic">
-            Run the diagnostic.
-          </h2>
-          <OracleFunnel />
+        {/* BLOCK 3: FINAL CLOSE */}
+        <section className="space-y-8 text-center">
+          <div className="max-w-2xl mx-auto space-y-4">
+            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+              Get Started
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
+              Download your cosmic user manual.
+            </h2>
+            <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
+              Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Enter your birth details and decode the program.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <OracleFunnel
+              variant="inline"
+              ctaText="Initialize Private Chat"
+              ctaSubtext="First 5 minutes are on us. Break-even on clarity instantly."
+              ctaPosition="footer_inline"
+            />
+          </div>
         </section>
       </main>
 

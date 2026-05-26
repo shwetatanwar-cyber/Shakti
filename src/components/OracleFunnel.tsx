@@ -13,10 +13,13 @@ type Stage =
   | 'paywall'
   | 'paid';
 
-type Variant = 'orb' | 'floating';
+type Variant = 'orb' | 'floating' | 'inline';
 
 interface Props {
   variant?: Variant;
+  ctaText?: string;
+  ctaSubtext?: string;
+  ctaPosition?: string;
 }
 
 const CALC_STEPS = [
@@ -29,7 +32,12 @@ const CALC_STEPS = [
   'Compiling Prakriti configuration…',
 ];
 
-const OracleFunnel = ({ variant = 'orb' }: Props) => {
+const OracleFunnel = ({
+  variant = 'orb',
+  ctaText = 'Get My Free Reading',
+  ctaSubtext = '⚡ Private AI. No human eyes. Instant generation.',
+  ctaPosition = 'hero_inline',
+}: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
   const [birth, setBirth] = useState({ date: '', time: '', location: '' });
   const [focus, setFocus] = useState('');
@@ -150,6 +158,64 @@ const OracleFunnel = ({ variant = 'orb' }: Props) => {
 
   // ---------- TRIGGERS ----------
   if (stage === 'closed') {
+    if (variant === 'inline') {
+      const canSubmit = !!birth.date && !!birth.time && !!birth.location.trim();
+      return (
+        <div className="w-full max-w-md mx-auto">
+          <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
+            <div className="grid grid-cols-1 gap-3">
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Date of Birth</label>
+                <input
+                  type="date"
+                  value={birth.date}
+                  onChange={(e) => setBirth({ ...birth, date: e.target.value })}
+                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Time of Birth</label>
+                <input
+                  type="time"
+                  value={birth.time}
+                  onChange={(e) => setBirth({ ...birth, time: e.target.value })}
+                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">City of Birth</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Mumbai, India"
+                  value={birth.location}
+                  onChange={(e) => setBirth({ ...birth, location: e.target.value })}
+                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              disabled={!canSubmit}
+              onClick={() => {
+                trackGAEvent('birth_details_submit', {
+                  has_date: !!birth.date,
+                  has_time: !!birth.time,
+                  location_region: 'processed',
+                  positioning: ctaPosition,
+                });
+                setStage('focus');
+              }}
+              className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
+            >
+              {ctaText} →
+            </button>
+            <p className="text-center font-body text-xs text-muted-foreground">
+              {ctaSubtext}
+            </p>
+          </div>
+        </div>
+      );
+    }
     if (variant === 'orb') {
       return (
         <div className="flex flex-col items-center justify-center py-16">
