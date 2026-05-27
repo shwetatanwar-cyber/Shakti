@@ -86,7 +86,7 @@ const OracleFunnel = ({
       submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
       has_custom_text: focusVal.trim() ? true : false,
     });
-    trackMetaEvent('InitiateCheckout', { content_category: 'Oracle Query Selection' });
+    trackMetaEvent('InitiateCheckout');
     const started = Date.now();
 
     // ---- Persist consultation to Supabase (schema-aligned) ----
@@ -145,7 +145,7 @@ const OracleFunnel = ({
         } catch {
           /* ignore storage errors */
         }
-        trackMetaEvent('Lead', { content_name: 'Birth Details' });
+        trackMetaEvent('Lead');
       }
     } catch (dbErr) {
       console.error('CRITICAL SUPABASE PIPELINE FAILURE:', dbErr);
@@ -339,7 +339,7 @@ const OracleFunnel = ({
                   location_region: 'processed',
                   positioning: ctaPosition,
                 });
-                trackMetaEvent('AddToCart', { content_name: 'Birth Details' });
+                trackMetaEvent('AddToCart');
                 try {
                   localStorage.setItem('oracle_user_name', birth.name.trim());
                 } catch {
@@ -488,7 +488,7 @@ const OracleFunnel = ({
                   has_time: !!birth.time,
                   location_region: 'processed',
                 });
-                trackMetaEvent('AddToCart', { content_name: 'Birth Details' });
+                trackMetaEvent('AddToCart');
                 try {
                   localStorage.setItem('oracle_user_name', birth.name.trim());
                 } catch {
@@ -662,11 +662,7 @@ const OracleFunnel = ({
                           currency: 'INR',
                           conversion_tier: 'premium_oracle_chat',
                         });
-                        trackMetaEvent('InitiateCheckout', {
-                          value: 199.0,
-                          currency: 'INR',
-                          content_name: 'Premium Digital Oracle Report',
-                        });
+                        trackMetaEvent('InitiateCheckout');
                         setStage('paywall');
                       }}
                       className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
