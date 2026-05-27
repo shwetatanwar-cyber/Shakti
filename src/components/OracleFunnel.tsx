@@ -39,7 +39,7 @@ const OracleFunnel = ({
   ctaPosition = 'hero_inline',
 }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
-  const [birth, setBirth] = useState({ date: '', time: '', location: '' });
+  const [birth, setBirth] = useState({ name: '', date: '', time: '', location: '' });
   const [focus, setFocus] = useState('');
   const [overview, setOverview] = useState('');
   const [locked, setLocked] = useState('');
@@ -60,7 +60,7 @@ const OracleFunnel = ({
   const close = () => setStage('closed');
   const resetAll = () => {
     setStage('closed');
-    setBirth({ date: '', time: '', location: '' });
+    setBirth({ name: '', date: '', time: '', location: '' });
     setFocus('');
     setOverview('');
     setLocked('');
@@ -159,11 +159,24 @@ const OracleFunnel = ({
   // ---------- TRIGGERS ----------
   if (stage === 'closed') {
     if (variant === 'inline') {
-      const canSubmit = !!birth.date && !!birth.time && !!birth.location.trim();
+      const canSubmit =
+        !!birth.name.trim() && !!birth.date && !!birth.time && !!birth.location.trim();
       return (
         <div className="w-full max-w-md mx-auto">
           <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
             <div className="grid grid-cols-1 gap-3">
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Arjun"
+                  value={birth.name}
+                  onChange={(e) => setBirth({ ...birth, name: e.target.value })}
+                  maxLength={80}
+                  required
+                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                />
+              </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Date of Birth</label>
                 <input
@@ -203,6 +216,12 @@ const OracleFunnel = ({
                   location_region: 'processed',
                   positioning: ctaPosition,
                 });
+                trackMetaEvent('AddToCart', { content_name: 'Birth Details' });
+                try {
+                  localStorage.setItem('oracle_user_name', birth.name.trim());
+                } catch {
+                  /* ignore */
+                }
                 setStage('focus');
               }}
               className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
