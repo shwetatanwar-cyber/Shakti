@@ -28,9 +28,14 @@ export const trackMetaEvent = (
   if (typeof window === 'undefined') return;
   try {
     if (typeof window.fbq === 'function') {
-      window.fbq('track', eventName, params);
+      if (eventName === 'Purchase') {
+        window.fbq('track', 'Purchase', { value: 199.0, currency: 'INR' });
+      } else {
+        // Restricted standard events: send with no custom parameters
+        window.fbq('track', eventName);
+      }
     } else {
-      console.log(`[Meta Pixel Debug] Event: ${eventName}`, params);
+      console.log(`[Meta Pixel Debug] Event: ${eventName}`);
     }
   } catch (e) {
     console.warn('[analytics] failed to track Meta event', eventName, e);
