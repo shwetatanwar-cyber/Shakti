@@ -11,7 +11,8 @@ type Stage =
   | 'generating'
   | 'report'
   | 'paywall'
-  | 'paid';
+  | 'paid'
+  | 'whatsapp_success';
 
 type Variant = 'orb' | 'floating' | 'inline';
 
@@ -39,7 +40,15 @@ const OracleFunnel = ({
   ctaPosition = 'hero_inline',
 }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
-  const [birth, setBirth] = useState({ name: '', date: '', time: '', location: '' });
+  const [birth, setBirth] = useState({ name: '', gender: '', date: '', time: '', location: '' });
+  const [partnerOpen, setPartnerOpen] = useState(false);
+  const [partner, setPartner] = useState({
+    name: '',
+    gender: '',
+    dob: '',
+    time: '',
+    location: '',
+  });
   const [focus, setFocus] = useState('');
   const [overview, setOverview] = useState('');
   const [locked, setLocked] = useState('');
@@ -60,7 +69,9 @@ const OracleFunnel = ({
   const close = () => setStage('closed');
   const resetAll = () => {
     setStage('closed');
-    setBirth({ name: '', date: '', time: '', location: '' });
+    setBirth({ name: '', gender: '', date: '', time: '', location: '' });
+    setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
+    setPartnerOpen(false);
     setFocus('');
     setOverview('');
     setLocked('');
@@ -103,6 +114,14 @@ const OracleFunnel = ({
         consultation_category: submissionType,
         session_id: sessionId,
         payment_status: 'pending',
+        name: birth.name.trim() || null,
+        gender: birth.gender || null,
+        partner_name: partnerOpen && partner.name.trim() ? partner.name.trim() : null,
+        partner_gender: partnerOpen && partner.gender ? partner.gender : null,
+        partner_dob: partnerOpen && partner.dob ? partner.dob : null,
+        partner_time_of_birth: partnerOpen && partner.time ? partner.time : null,
+        partner_city_of_birth:
+          partnerOpen && partner.location.trim() ? partner.location.trim() : null,
       };
 
       const { data: inserted, error: insertError } = await supabase
