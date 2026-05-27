@@ -317,9 +317,20 @@ const OracleFunnel = ({
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Date of Birth</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Your Name</label>
                 <input
                   autoFocus
+                  type="text"
+                  placeholder="What should Tara call you?"
+                  value={birth.name}
+                  onChange={(e) => setBirth({ ...birth, name: e.target.value })}
+                  maxLength={80}
+                  className="w-full mt-2 bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-base placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors"
+                />
+              </div>
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Date of Birth</label>
+                <input
                   type="date"
                   value={birth.date}
                   onChange={(e) => setBirth({ ...birth, date: e.target.value })}
@@ -347,13 +358,19 @@ const OracleFunnel = ({
               </div>
             </div>
             <button
-              disabled={!birth.date || !birth.time || !birth.location}
+              disabled={!birth.name.trim() || !birth.date || !birth.time || !birth.location}
               onClick={() => {
                 trackGAEvent('birth_details_submit', {
                   has_date: !!birth.date,
                   has_time: !!birth.time,
                   location_region: 'processed',
                 });
+                trackMetaEvent('AddToCart', { content_name: 'Birth Details' });
+                try {
+                  localStorage.setItem('oracle_user_name', birth.name.trim());
+                } catch {
+                  /* ignore */
+                }
                 setStage('focus');
               }}
               className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
