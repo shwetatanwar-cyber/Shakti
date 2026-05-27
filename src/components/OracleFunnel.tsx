@@ -86,7 +86,6 @@ const OracleFunnel = ({
       submission_type: focusVal.trim() ? 'specific_custom_text' : 'generic_alignment_scan',
       has_custom_text: focusVal.trim() ? true : false,
     });
-    trackMetaEvent('InitiateCheckout');
     const started = Date.now();
 
     // ---- Persist consultation to Supabase (schema-aligned) ----
@@ -145,7 +144,6 @@ const OracleFunnel = ({
         } catch {
           /* ignore storage errors */
         }
-        trackMetaEvent('Lead');
       }
     } catch (dbErr) {
       console.error('CRITICAL SUPABASE PIPELINE FAILURE:', dbErr);
