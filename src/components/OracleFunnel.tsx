@@ -578,77 +578,97 @@ const OracleFunnel = ({
 };
 
 const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [method, setMethod] = useState<'upi' | 'card'>('upi');
-  const [processing, setProcessing] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [touched, setTouched] = useState(false);
 
-  const handlePay = () => {
-    setProcessing(true);
-    setTimeout(() => onSuccess(), 1600);
+  // Accept 10-digit Indian mobile numbers, optionally prefixed with +91 / 91 / 0.
+  const digits = phone.replace(/\D/g, '');
+  const normalized = digits.replace(/^(91|091|0)/, '');
+  const isValid = /^[6-9]\d{9}$/.test(normalized);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValid || submitting) {
+      setTouched(true);
+      return;
+    }
+    setSubmitting(true);
+
+    trackGAEvent('payment_complete', {
+      price_point: 199,
+      currency: 'INR',
+      conversion_tier: 'premium_oracle_chat',
+      contact_channel: 'whatsapp',
+    });
+    trackMetaEvent('Purchase', { value: 199.0, currency: 'INR' });
+
+    try {
+      localStorage.setItem('oracle_whatsapp_number', `+91${normalized}`);
+    } catch {
+      /* ignore */
+    }
+
+    setTimeout(() => onSuccess(), 1200);
   };
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-background/80 backdrop-blur-2xl animate-in fade-in duration-300">
-      <div className="glass-tile p-8 md:p-10 max-w-md w-full space-y-6 border-accent/30">
+      <form
+        onSubmit={handleSubmit}
+        className="glass-tile p-8 md:p-10 max-w-md w-full space-y-6 border-accent/30"
+      >
         <div className="text-center space-y-2">
-          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Premium Checkout</p>
-          <h3 className="font-display text-3xl font-light italic">Unlock the Shadow</h3>
-          <p className="font-body text-4xl text-foreground mt-4">₹199 <span className="text-sm text-muted-foreground">/ session</span></p>
+          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+            Final Step · WhatsApp
+          </p>
+          <h3 className="font-display text-3xl font-light italic leading-tight">
+            Where should we send your link?
+          </h3>
+          <p className="font-body text-sm text-muted-foreground leading-relaxed pt-2">
+            Enter the WhatsApp number to receive the payment link for your detailed report and a
+            free 5-minute chat with Tara.
+          </p>
         </div>
 
-        <div className="flex gap-2">
-          {(['upi', 'card'] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMethod(m)}
-              className={`flex-1 font-body text-[10px] tracking-[0.3em] uppercase py-3 rounded-full border transition-all ${
-                method === m
-                  ? 'border-accent bg-accent/15 text-bone'
-                  : 'border-muted-foreground/20 text-muted-foreground hover:border-foreground/40'
-              }`}
-            >
-              {m === 'upi' ? 'UPI' : 'Card'}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-3">
-          {method === 'upi' ? (
+        <div className="space-y-2">
+          <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">
+            WhatsApp Number
+          </label>
+          <div className="flex items-center gap-2 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 focus-within:border-accent transition-colors">
+            <span className="font-body text-base text-muted-foreground">+91</span>
             <input
-              placeholder="yourname@upi"
-              className="w-full bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent"
+              autoFocus
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
+              maxLength={15}
+              placeholder="98xxxxxx21"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              onBlur={() => setTouched(true)}
+              className="flex-1 bg-transparent font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
             />
-          ) : (
-            <>
-              <input
-                placeholder="Card number"
-                className="w-full bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent"
-              />
-              <div className="flex gap-3">
-                <input
-                  placeholder="MM / YY"
-                  className="flex-1 bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent"
-                />
-                <input
-                  placeholder="CVV"
-                  className="flex-1 bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent"
-                />
-              </div>
-            </>
+          </div>
+          {touched && !isValid && (
+            <p className="font-body text-xs text-destructive">
+              Enter a valid 10-digit Indian mobile number.
+            </p>
           )}
         </div>
 
         <button
-          disabled={processing}
-          onClick={handlePay}
-          className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all disabled:opacity-60"
+          type="submit"
+          disabled={!isValid || submitting}
+          className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
         >
-          {processing ? 'Authorizing…' : `Pay ₹199 via ${method === 'upi' ? 'UPI' : 'Card'}`}
+          {submitting ? 'Sending Link…' : 'Send My Payment Link →'}
         </button>
 
         <p className="text-center font-body text-[10px] tracking-[0.25em] uppercase text-muted-foreground/60">
-          Simulated checkout · No real charge
+          ₹199 · Detailed report + 5 min chat with Tara
         </p>
-      </div>
+      </form>
     </div>
   );
 };
