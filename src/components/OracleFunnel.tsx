@@ -179,7 +179,12 @@ const OracleFunnel = ({
   if (stage === 'closed') {
     if (variant === 'inline') {
       const canSubmit =
-        !!birth.name.trim() && !!birth.date && !!birth.time && !!birth.location.trim();
+        !!birth.name.trim() &&
+        !!birth.gender &&
+        !!birth.date &&
+        !!birth.time &&
+        !!birth.location.trim();
+      const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
           <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
@@ -195,6 +200,28 @@ const OracleFunnel = ({
                   required
                   className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
                 />
+              </div>
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Gender</label>
+                <div className="mt-1.5 grid grid-cols-3 gap-2">
+                  {genderOpts.map((g) => {
+                    const active = birth.gender === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setBirth({ ...birth, gender: g })}
+                        className={`px-3 py-2.5 rounded-lg font-body text-sm border transition-all ${
+                          active
+                            ? 'border-accent bg-accent/20 text-foreground shadow-[0_0_18px_-6px_hsl(var(--accent)/0.7)]'
+                            : 'border-accent/30 bg-background/60 text-muted-foreground hover:border-accent/60 hover:text-foreground'
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Date of Birth</label>
@@ -225,6 +252,83 @@ const OracleFunnel = ({
                 />
               </div>
             </div>
+
+            {/* Optional partner accordion */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => setPartnerOpen((v) => !v)}
+                className="w-full flex items-center justify-center gap-2 font-body text-[11px] tracking-[0.2em] uppercase text-muted-foreground/80 hover:text-accent transition-colors py-2"
+                aria-expanded={partnerOpen}
+              >
+                <span className="text-base leading-none">{partnerOpen ? '−' : '+'}</span>
+                Add Partner's Details (Optional for Compatibility)
+              </button>
+              {partnerOpen && (
+                <div className="mt-2 grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-1 duration-300">
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Name</label>
+                    <input
+                      type="text"
+                      value={partner.name}
+                      onChange={(e) => setPartner({ ...partner, name: e.target.value })}
+                      maxLength={80}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Gender</label>
+                    <div className="mt-1.5 grid grid-cols-3 gap-2">
+                      {genderOpts.map((g) => {
+                        const active = partner.gender === g;
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => setPartner({ ...partner, gender: g })}
+                            className={`px-3 py-2 rounded-lg font-body text-xs border transition-all ${
+                              active
+                                ? 'border-accent/70 bg-accent/15 text-foreground/90'
+                                : 'border-muted-foreground/20 bg-background/40 text-muted-foreground/80 hover:border-accent/40'
+                            }`}
+                          >
+                            {g}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Date of Birth</label>
+                    <input
+                      type="date"
+                      value={partner.dob}
+                      onChange={(e) => setPartner({ ...partner, dob: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Time of Birth</label>
+                    <input
+                      type="time"
+                      value={partner.time}
+                      onChange={(e) => setPartner({ ...partner, time: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's City of Birth</label>
+                    <input
+                      type="text"
+                      value={partner.location}
+                      onChange={(e) => setPartner({ ...partner, location: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               disabled={!canSubmit}
