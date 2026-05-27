@@ -539,8 +539,8 @@ const OracleFunnel = ({
                           currency: 'INR',
                           conversion_tier: 'premium_oracle_chat',
                         });
-                        trackMetaEvent('Purchase', {
-                          value: 199.00,
+                        trackMetaEvent('InitiateCheckout', {
+                          value: 199.0,
                           currency: 'INR',
                           content_name: 'Premium Digital Oracle Report',
                         });
