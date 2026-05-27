@@ -517,8 +517,16 @@ export type Database = {
           birth_time: string
           consultation_category: string | null
           created_at: string | null
+          gender: string | null
           id: string
+          name: string | null
+          partner_city_of_birth: string | null
+          partner_dob: string | null
+          partner_gender: string | null
+          partner_name: string | null
+          partner_time_of_birth: string | null
           payment_status: string | null
+          phone_number: string | null
           raw_user_reason: string | null
           session_id: string | null
           submission_type: string | null
@@ -529,8 +537,16 @@ export type Database = {
           birth_time: string
           consultation_category?: string | null
           created_at?: string | null
+          gender?: string | null
           id?: string
+          name?: string | null
+          partner_city_of_birth?: string | null
+          partner_dob?: string | null
+          partner_gender?: string | null
+          partner_name?: string | null
+          partner_time_of_birth?: string | null
           payment_status?: string | null
+          phone_number?: string | null
           raw_user_reason?: string | null
           session_id?: string | null
           submission_type?: string | null
@@ -541,8 +557,16 @@ export type Database = {
           birth_time?: string
           consultation_category?: string | null
           created_at?: string | null
+          gender?: string | null
           id?: string
+          name?: string | null
+          partner_city_of_birth?: string | null
+          partner_dob?: string | null
+          partner_gender?: string | null
+          partner_name?: string | null
+          partner_time_of_birth?: string | null
           payment_status?: string | null
+          phone_number?: string | null
           raw_user_reason?: string | null
           session_id?: string | null
           submission_type?: string | null

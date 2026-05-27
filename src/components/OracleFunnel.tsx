@@ -11,7 +11,8 @@ type Stage =
   | 'generating'
   | 'report'
   | 'paywall'
-  | 'paid';
+  | 'paid'
+  | 'whatsapp_success';
 
 type Variant = 'orb' | 'floating' | 'inline';
 
@@ -39,7 +40,15 @@ const OracleFunnel = ({
   ctaPosition = 'hero_inline',
 }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
-  const [birth, setBirth] = useState({ name: '', date: '', time: '', location: '' });
+  const [birth, setBirth] = useState({ name: '', gender: '', date: '', time: '', location: '' });
+  const [partnerOpen, setPartnerOpen] = useState(false);
+  const [partner, setPartner] = useState({
+    name: '',
+    gender: '',
+    dob: '',
+    time: '',
+    location: '',
+  });
   const [focus, setFocus] = useState('');
   const [overview, setOverview] = useState('');
   const [locked, setLocked] = useState('');
@@ -60,7 +69,9 @@ const OracleFunnel = ({
   const close = () => setStage('closed');
   const resetAll = () => {
     setStage('closed');
-    setBirth({ name: '', date: '', time: '', location: '' });
+    setBirth({ name: '', gender: '', date: '', time: '', location: '' });
+    setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
+    setPartnerOpen(false);
     setFocus('');
     setOverview('');
     setLocked('');
@@ -103,6 +114,14 @@ const OracleFunnel = ({
         consultation_category: submissionType,
         session_id: sessionId,
         payment_status: 'pending',
+        name: birth.name.trim() || null,
+        gender: birth.gender || null,
+        partner_name: partnerOpen && partner.name.trim() ? partner.name.trim() : null,
+        partner_gender: partnerOpen && partner.gender ? partner.gender : null,
+        partner_dob: partnerOpen && partner.dob ? partner.dob : null,
+        partner_time_of_birth: partnerOpen && partner.time ? partner.time : null,
+        partner_city_of_birth:
+          partnerOpen && partner.location.trim() ? partner.location.trim() : null,
       };
 
       const { data: inserted, error: insertError } = await supabase
@@ -160,7 +179,12 @@ const OracleFunnel = ({
   if (stage === 'closed') {
     if (variant === 'inline') {
       const canSubmit =
-        !!birth.name.trim() && !!birth.date && !!birth.time && !!birth.location.trim();
+        !!birth.name.trim() &&
+        !!birth.gender &&
+        !!birth.date &&
+        !!birth.time &&
+        !!birth.location.trim();
+      const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
           <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
@@ -176,6 +200,28 @@ const OracleFunnel = ({
                   required
                   className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
                 />
+              </div>
+              <div>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Gender</label>
+                <div className="mt-1.5 grid grid-cols-3 gap-2">
+                  {genderOpts.map((g) => {
+                    const active = birth.gender === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => setBirth({ ...birth, gender: g })}
+                        className={`px-3 py-2.5 rounded-lg font-body text-sm border transition-all ${
+                          active
+                            ? 'border-accent bg-accent/20 text-foreground shadow-[0_0_18px_-6px_hsl(var(--accent)/0.7)]'
+                            : 'border-accent/30 bg-background/60 text-muted-foreground hover:border-accent/60 hover:text-foreground'
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Date of Birth</label>
@@ -206,6 +252,83 @@ const OracleFunnel = ({
                 />
               </div>
             </div>
+
+            {/* Optional partner accordion */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => setPartnerOpen((v) => !v)}
+                className="w-full flex items-center justify-center gap-2 font-body text-[11px] tracking-[0.2em] uppercase text-muted-foreground/80 hover:text-accent transition-colors py-2"
+                aria-expanded={partnerOpen}
+              >
+                <span className="text-base leading-none">{partnerOpen ? '−' : '+'}</span>
+                Add Partner's Details (Optional for Compatibility)
+              </button>
+              {partnerOpen && (
+                <div className="mt-2 grid grid-cols-1 gap-3 animate-in fade-in slide-in-from-top-1 duration-300">
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Name</label>
+                    <input
+                      type="text"
+                      value={partner.name}
+                      onChange={(e) => setPartner({ ...partner, name: e.target.value })}
+                      maxLength={80}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Gender</label>
+                    <div className="mt-1.5 grid grid-cols-3 gap-2">
+                      {genderOpts.map((g) => {
+                        const active = partner.gender === g;
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            onClick={() => setPartner({ ...partner, gender: g })}
+                            className={`px-3 py-2 rounded-lg font-body text-xs border transition-all ${
+                              active
+                                ? 'border-accent/70 bg-accent/15 text-foreground/90'
+                                : 'border-muted-foreground/20 bg-background/40 text-muted-foreground/80 hover:border-accent/40'
+                            }`}
+                          >
+                            {g}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Date of Birth</label>
+                    <input
+                      type="date"
+                      value={partner.dob}
+                      onChange={(e) => setPartner({ ...partner, dob: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's Time of Birth</label>
+                    <input
+                      type="time"
+                      value={partner.time}
+                      onChange={(e) => setPartner({ ...partner, time: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's City of Birth</label>
+                    <input
+                      type="text"
+                      value={partner.location}
+                      onChange={(e) => setPartner({ ...partner, location: e.target.value })}
+                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               type="button"
               disabled={!canSubmit}
@@ -571,13 +694,44 @@ const OracleFunnel = ({
           </div>
         )}
 
-        {stage === 'paywall' && <Paywall onSuccess={() => setStage('paid')} />}
+        {stage === 'paywall' && (
+          <Paywall
+            consultationId={consultationId}
+            onSuccess={() => setStage('whatsapp_success')}
+          />
+        )}
+
+        {stage === 'whatsapp_success' && (
+          <div className="glass-tile p-8 md:p-10 max-w-md mx-auto text-center space-y-5 border-accent/30 animate-in fade-in duration-500">
+            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+              ✦ Confirmed
+            </p>
+            <h3 className="font-display text-2xl md:text-3xl font-light italic leading-tight">
+              Great! Keep a tab on your whatsapp inbox.
+            </h3>
+            <p className="font-body text-sm text-muted-foreground">
+              Tara will soon see you there.
+            </p>
+            <button
+              onClick={resetAll}
+              className="mx-auto block font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors pt-2"
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
+const Paywall = ({
+  consultationId,
+  onSuccess,
+}: {
+  consultationId: string | null;
+  onSuccess: () => void;
+}) => {
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -587,13 +741,30 @@ const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
   const normalized = digits.replace(/^(91|091|0)/, '');
   const isValid = /^[6-9]\d{9}$/.test(normalized);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid || submitting) {
       setTouched(true);
       return;
     }
     setSubmitting(true);
+
+    const fullPhone = `+91${normalized}`;
+
+    // Persist phone_number to the consultation record (non-blocking for UX).
+    if (consultationId) {
+      try {
+        const { error: updateError } = await supabase
+          .from('oracle_consultations')
+          .update({ phone_number: fullPhone, payment_status: 'link_sent' })
+          .eq('id', consultationId);
+        if (updateError) {
+          console.error('Failed to update consultation with phone:', updateError);
+        }
+      } catch (err) {
+        console.error('Phone update error:', err);
+      }
+    }
 
     trackGAEvent('payment_complete', {
       price_point: 199,
@@ -604,12 +775,12 @@ const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
     trackMetaEvent('Purchase', { value: 199.0, currency: 'INR' });
 
     try {
-      localStorage.setItem('oracle_whatsapp_number', `+91${normalized}`);
+      localStorage.setItem('oracle_whatsapp_number', fullPhone);
     } catch {
       /* ignore */
     }
 
-    setTimeout(() => onSuccess(), 1200);
+    setTimeout(() => onSuccess(), 800);
   };
 
   return (
