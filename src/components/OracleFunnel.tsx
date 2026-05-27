@@ -694,13 +694,44 @@ const OracleFunnel = ({
           </div>
         )}
 
-        {stage === 'paywall' && <Paywall onSuccess={() => setStage('paid')} />}
+        {stage === 'paywall' && (
+          <Paywall
+            consultationId={consultationId}
+            onSuccess={() => setStage('whatsapp_success')}
+          />
+        )}
+
+        {stage === 'whatsapp_success' && (
+          <div className="glass-tile p-8 md:p-10 max-w-md mx-auto text-center space-y-5 border-accent/30 animate-in fade-in duration-500">
+            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+              ✦ Confirmed
+            </p>
+            <h3 className="font-display text-2xl md:text-3xl font-light italic leading-tight">
+              Great! Keep a tab on your whatsapp inbox.
+            </h3>
+            <p className="font-body text-sm text-muted-foreground">
+              Tara will soon see you there.
+            </p>
+            <button
+              onClick={resetAll}
+              className="mx-auto block font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors pt-2"
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
+const Paywall = ({
+  consultationId,
+  onSuccess,
+}: {
+  consultationId: string | null;
+  onSuccess: () => void;
+}) => {
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -710,13 +741,30 @@ const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
   const normalized = digits.replace(/^(91|091|0)/, '');
   const isValid = /^[6-9]\d{9}$/.test(normalized);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValid || submitting) {
       setTouched(true);
       return;
     }
     setSubmitting(true);
+
+    const fullPhone = `+91${normalized}`;
+
+    // Persist phone_number to the consultation record (non-blocking for UX).
+    if (consultationId) {
+      try {
+        const { error: updateError } = await supabase
+          .from('oracle_consultations')
+          .update({ phone_number: fullPhone, payment_status: 'link_sent' })
+          .eq('id', consultationId);
+        if (updateError) {
+          console.error('Failed to update consultation with phone:', updateError);
+        }
+      } catch (err) {
+        console.error('Phone update error:', err);
+      }
+    }
 
     trackGAEvent('payment_complete', {
       price_point: 199,
@@ -727,12 +775,12 @@ const Paywall = ({ onSuccess }: { onSuccess: () => void }) => {
     trackMetaEvent('Purchase', { value: 199.0, currency: 'INR' });
 
     try {
-      localStorage.setItem('oracle_whatsapp_number', `+91${normalized}`);
+      localStorage.setItem('oracle_whatsapp_number', fullPhone);
     } catch {
       /* ignore */
     }
 
-    setTimeout(() => onSuccess(), 1200);
+    setTimeout(() => onSuccess(), 800);
   };
 
   return (
