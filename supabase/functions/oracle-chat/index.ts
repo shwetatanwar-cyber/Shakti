@@ -1,5 +1,5 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import { AstroTime, Body, EclipticLongitude } from "npm:astronomy-engine@2.1.19";
+import { AstroTime, Body, GeoVector, Ecliptic } from "npm:astronomy-engine@2.1.19";
 
 const SYSTEM_PROMPT = `You are a deeply warm, comforting, and accurate Vedic Astrology guide.
 Your reader is a young Indian millennial who is feeling anxious, scared, or stuck. English is NOT her native language, so you must speak in very simple, gentle, and clear English. Avoid big, heavy words. Use short sentences.
@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       ];
 
       const planetaryPositions = bodies.map(({ name, body }) => {
-        const tropLon = EclipticLongitude(body, astroTime);
+        const tropLon = Ecliptic(GeoVector(body, astroTime, true)).elon;
         const sid = norm360(tropLon - ayan);
         return {
           name,
