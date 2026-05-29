@@ -1,5 +1,5 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import * as Astronomy from "npm:astronomy-engine@2.1.19";
+import { AstroTime, Body, EclipticLongitude } from "npm:astronomy-engine@2.1.19";
 
 const SYSTEM_PROMPT = `You are a deeply warm, comforting, and accurate Vedic Astrology guide.
 Your reader is a young Indian millennial who is feeling anxious, scared, or stuck. English is NOT her native language, so you must speak in very simple, gentle, and clear English. Avoid big, heavy words. Use short sentences.
@@ -67,23 +67,23 @@ Deno.serve(async (req) => {
         Date.UTC(year, month - 1, day, hour, min, 0) -
         Math.round(timezoneOffset * 3600 * 1000);
       const utDate = new Date(utcMs);
-      const astroTime = new Astronomy.AstroTime(utDate);
+      const astroTime = new AstroTime(utDate);
       // Julian Date (UT)
       const jd = 2451545.0 + astroTime.ut;
       const ayan = lahiriAyanamsa(jd);
 
-      const bodies: { name: string; body: Astronomy.Body }[] = [
-        { name: "Sun", body: Astronomy.Body.Sun },
-        { name: "Moon", body: Astronomy.Body.Moon },
-        { name: "Mercury", body: Astronomy.Body.Mercury },
-        { name: "Venus", body: Astronomy.Body.Venus },
-        { name: "Mars", body: Astronomy.Body.Mars },
-        { name: "Jupiter", body: Astronomy.Body.Jupiter },
-        { name: "Saturn", body: Astronomy.Body.Saturn },
+      const bodies: { name: string; body: Body }[] = [
+        { name: "Sun", body: Body.Sun },
+        { name: "Moon", body: Body.Moon },
+        { name: "Mercury", body: Body.Mercury },
+        { name: "Venus", body: Body.Venus },
+        { name: "Mars", body: Body.Mars },
+        { name: "Jupiter", body: Body.Jupiter },
+        { name: "Saturn", body: Body.Saturn },
       ];
 
       const planetaryPositions = bodies.map(({ name, body }) => {
-        const tropLon = Astronomy.EclipticLongitude(body, astroTime);
+        const tropLon = EclipticLongitude(body, astroTime);
         const sid = norm360(tropLon - ayan);
         return {
           name,
