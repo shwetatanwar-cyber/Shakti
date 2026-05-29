@@ -194,15 +194,15 @@ const OracleFunnel = ({
         timezoneOffset: birth.timezoneOffset,
       };
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
-        body: { mode: 'report', birth: birthPayload, focus: focusVal },
+        body: { mode: 'report', birth: birthPayload, query: focusVal },
       });
       if (error) throw error;
       // Ensure the animation plays for at least ~5s for ritual feel
       const elapsed = Date.now() - started;
       const wait = Math.max(0, 5000 - elapsed);
       setTimeout(() => {
-        setOverview(data?.overview || data?.text || '');
-        setLocked(data?.locked || '');
+        setOverview(data?.text || '');
+        setLocked('');
         setStage('report');
       }, wait);
     } catch (e) {
@@ -575,34 +575,27 @@ const OracleFunnel = ({
               Step 2 of 2 · Query Vector
             </p>
             <h3 className="font-display text-2xl md:text-3xl font-light italic">
-              Is there a specific layer that needs reading?
+              What is your biggest worry or question right now?
             </h3>
             <p className="font-body text-sm text-muted-foreground">
-              Name an aspect of life you're seeking guidance on — love, work, health, dharma — or run a general system scan.
+              Tell us what is keeping you up at night. The more you share, the more specific your reading will be.
             </p>
             <textarea
-              rows={3}
+              rows={4}
               value={focus}
               onChange={(e) => setFocus(e.target.value)}
-              placeholder="A specific area, or leave blank for a general overview."
+              required
+              placeholder="Type your query here (e.g., Is there a third person impacting my relationship, or when will I find stable love?)..."
               className="w-full bg-transparent border border-muted-foreground/20 rounded-2xl p-4 font-body text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors resize-none"
             />
             {error && <p className="text-xs text-destructive font-body">{error}</p>}
-            <div className="flex gap-3">
-              <button
-                onClick={() => generateReport('')}
-                className="flex-1 font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full border border-muted-foreground/30 hover:border-foreground transition-all"
-              >
-                General Scan
-              </button>
-              <button
-                disabled={!focus.trim()}
-                onClick={() => generateReport(focus)}
-                className="flex-1 font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                Compile Report →
-              </button>
-            </div>
+            <button
+              disabled={!focus.trim()}
+              onClick={() => generateReport(focus)}
+              className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full border border-accent/40 bg-accent/10 text-bone hover:bg-accent/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Compile Report →
+            </button>
           </div>
         )}
 
@@ -675,69 +668,47 @@ const OracleFunnel = ({
           </div>
         )}
 
-        {/* REPORT — visible overview + locked blurred preview */}
+        {/* REPORT — single continuous reading + paywall CTA */}
         {(stage === 'report' || stage === 'paywall' || stage === 'paid') && (
           <div className="space-y-6 animate-in fade-in duration-700 max-h-[85vh] overflow-y-auto pr-2">
             <div className="text-center">
               <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-                System Configuration Report
+                Your Reading
               </p>
               <h3 className="font-display text-2xl md:text-3xl font-light italic mt-2">
-                Your initial config has compiled.
+                A message from Tara.
               </h3>
             </div>
 
-            {/* Visible overview */}
-            <div className="glass-tile p-6 md:p-8">
-              <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent mb-3">
-                Overview · Free Reading
-              </p>
-              <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap">
+            {/* Single continuous text block */}
+            <div className="glass-tile p-6 md:p-10">
+              <div className="font-body text-base md:text-lg text-foreground/90 leading-loose whitespace-pre-wrap">
                 {overview}
               </div>
             </div>
 
-            {/* Locked full report */}
-            <div className="relative glass-tile p-6 md:p-8 overflow-hidden">
-              <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent mb-3">
-                Full Architecture · Premium
-              </p>
-              <div
-                className={`font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap min-h-[220px] transition-all duration-700 ${
-                  stage === 'paid' ? '' : 'blur-md select-none pointer-events-none'
-                }`}
-              >
-                {locked}
+            {stage !== 'paid' && (
+              <div className="glass-tile px-6 py-6 max-w-md mx-auto text-center space-y-3 border-accent/30">
+                <Lock className="w-5 h-5 mx-auto text-accent" />
+                <button
+                  onClick={() => {
+                    trackGAEvent('payment_initiate', {
+                      price_point: 199,
+                      currency: 'INR',
+                      conversion_tier: 'premium_oracle_chat',
+                    });
+                    trackMetaEvent('InitiateCheckout');
+                    setStage('paywall');
+                  }}
+                  className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                >
+                  <Sparkles className="w-3.5 h-3.5" /> Unlock full report for ₹199
+                </button>
+                <p className="font-body text-xs text-muted-foreground">
+                  And get your free 5 minutes consultation with Tara
+                </p>
               </div>
-
-              {stage !== 'paid' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-t from-background via-background/85 to-background/30">
-                  <div className="glass-tile px-6 py-6 max-w-sm text-center space-y-4 border-accent/30">
-                    <Lock className="w-5 h-5 mx-auto text-accent" />
-                    <p className="font-display italic text-lg">
-                      Unlock the full architecture.
-                    </p>
-                    <p className="font-body text-xs text-muted-foreground">
-                      Decode friction, runtime errors, and the compiler directives for your next chapter — plus continued dialogue with the Shadow.
-                    </p>
-                    <button
-                      onClick={() => {
-                        trackGAEvent('payment_initiate', {
-                          price_point: 199,
-                          currency: 'INR',
-                          conversion_tier: 'premium_oracle_chat',
-                        });
-                        trackMetaEvent('InitiateCheckout');
-                        setStage('paywall');
-                      }}
-                      className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" /> Unlock for ₹199
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
 
             {stage === 'paid' && (
               <div className="space-y-4">
