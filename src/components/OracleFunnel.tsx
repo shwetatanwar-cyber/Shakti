@@ -219,7 +219,9 @@ const OracleFunnel = ({
         !!birth.gender &&
         !!birth.date &&
         !!birth.time &&
-        !!birth.location.trim();
+        !!birth.location.trim() &&
+        birth.lat !== null &&
+        birth.lng !== null;
       const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
@@ -279,12 +281,22 @@ const OracleFunnel = ({
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">City of Birth</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Mumbai, India"
+                <CityAutocomplete
                   value={birth.location}
-                  onChange={(e) => setBirth({ ...birth, location: e.target.value })}
-                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  onSelect={(c) =>
+                    setBirth({
+                      ...birth,
+                      location: `${c.name}, ${c.state}`,
+                      lat: c.lat,
+                      lng: c.lng,
+                    })
+                  }
+                  onClear={() =>
+                    setBirth((b) => ({ ...b, location: '', lat: null, lng: null }))
+                  }
+                  placeholder="e.g. Mumbai, Maharashtra"
+                  className="mt-1.5"
+                  inputClassName="w-full bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
                 />
               </div>
             </div>
