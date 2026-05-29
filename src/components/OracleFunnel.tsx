@@ -214,8 +214,32 @@ const OracleFunnel = ({
         lng: birth.lng as number,
         timezoneOffset: birth.timezoneOffset,
       };
+      const partnerProvided =
+        partnerOpen &&
+        !!partner.dob &&
+        !!partner.time &&
+        !!partner.location.trim() &&
+        partner.lat !== null &&
+        partner.lng !== null;
+      const partnerPayload = partnerProvided
+        ? {
+            name: partner.name.trim() || null,
+            gender: partner.gender || null,
+            date: partner.dob,
+            time: partner.time,
+            location: partner.location,
+            lat: partner.lat as number,
+            lng: partner.lng as number,
+            timezoneOffset: partner.timezoneOffset,
+          }
+        : null;
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
-        body: { mode: 'report', birth: birthPayload, query: focusVal },
+        body: {
+          mode: 'report',
+          birth: birthPayload,
+          partner: partnerPayload,
+          query: focusVal,
+        },
       });
       if (error) throw error;
       // Ensure the animation plays for at least ~5s for ritual feel
