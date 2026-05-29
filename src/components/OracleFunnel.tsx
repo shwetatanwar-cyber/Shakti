@@ -3,6 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
 import { trackGAEvent, trackMetaEvent } from '@/utils/analytics';
 import { toast } from '@/hooks/use-toast';
+import CityAutocomplete from '@/components/CityAutocomplete';
+
+const IST_OFFSET = 5.5;
 
 type Stage =
   | 'closed'
@@ -40,7 +43,25 @@ const OracleFunnel = ({
   ctaPosition = 'hero_inline',
 }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
-  const [birth, setBirth] = useState({ name: '', gender: '', date: '', time: '', location: '' });
+  const [birth, setBirth] = useState<{
+    name: string;
+    gender: string;
+    date: string;
+    time: string;
+    location: string;
+    lat: number | null;
+    lng: number | null;
+    timezoneOffset: number;
+  }>({
+    name: '',
+    gender: '',
+    date: '',
+    time: '',
+    location: '',
+    lat: null,
+    lng: null,
+    timezoneOffset: IST_OFFSET,
+  });
   const [partnerOpen, setPartnerOpen] = useState(false);
   const [partner, setPartner] = useState({
     name: '',
@@ -69,7 +90,16 @@ const OracleFunnel = ({
   const close = () => setStage('closed');
   const resetAll = () => {
     setStage('closed');
-    setBirth({ name: '', gender: '', date: '', time: '', location: '' });
+    setBirth({
+      name: '',
+      gender: '',
+      date: '',
+      time: '',
+      location: '',
+      lat: null,
+      lng: null,
+      timezoneOffset: IST_OFFSET,
+    });
     setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
     setPartnerOpen(false);
     setFocus('');
@@ -155,8 +185,16 @@ const OracleFunnel = ({
     }
 
     try {
+      const birthPayload = {
+        date: birth.date,
+        time: birth.time,
+        location: birth.location,
+        lat: birth.lat as number,
+        lng: birth.lng as number,
+        timezoneOffset: birth.timezoneOffset,
+      };
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
-        body: { mode: 'report', birth, focus: focusVal },
+        body: { mode: 'report', birth: birthPayload, focus: focusVal },
       });
       if (error) throw error;
       // Ensure the animation plays for at least ~5s for ritual feel
