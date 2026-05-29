@@ -387,11 +387,22 @@ const OracleFunnel = ({
                   </div>
                   <div>
                     <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's City of Birth</label>
-                    <input
-                      type="text"
+                    <CityAutocomplete
                       value={partner.location}
-                      onChange={(e) => setPartner({ ...partner, location: e.target.value })}
-                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                      onSelect={(c) =>
+                        setPartner({
+                          ...partner,
+                          location: `${c.name}, ${c.state}`,
+                          lat: c.lat,
+                          lng: c.lng,
+                        })
+                      }
+                      onClear={() =>
+                        setPartner((p) => ({ ...p, location: '', lat: null, lng: null }))
+                      }
+                      placeholder="e.g. Mumbai, Maharashtra"
+                      className="mt-1.5"
+                      inputClassName="w-full bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                     />
                   </div>
                 </div>
