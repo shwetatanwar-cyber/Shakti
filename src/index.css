@@ -149,3 +149,54 @@
 .horizontal-scroll-container::-webkit-scrollbar {
   display: none;
 }
+
+/* App loader (shown before React mounts; replaced on first render) */
+#app-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: radial-gradient(ellipse at 50% 40%, #1a0a2e 0%, #0a0510 60%, #050208 100%);
+  z-index: 9999;
+}
+#app-loader .al-glow {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(270 76% 53% / 0.45), hsl(30 100% 60% / 0.2) 45%, transparent 70%);
+  filter: blur(40px);
+  animation: al-breathe 6s ease-in-out infinite;
+}
+#app-loader .al-wheel {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  mix-blend-mode: screen;
+}
+#app-loader .al-ring {
+  transform-origin: 100px 100px;
+}
+#app-loader .al-ring-1 { animation: al-spin-ccw 18s linear infinite; }
+#app-loader .al-ring-2 { animation: al-spin-cw 9s linear infinite; }
+#app-loader .al-ring-3 { animation: al-spin-ccw 6s linear infinite; }
+#app-loader .al-bindu { animation: al-pulse 2.4s ease-in-out infinite; transform-origin: 100px 100px; }
+#app-loader .al-label {
+  position: relative;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  text-transform: lowercase;
+  color: #e8e0cf;
+  opacity: 0.6;
+  animation: al-fade 2.4s ease-in-out infinite;
+}
+@keyframes al-spin-cw { to { transform: rotate(360deg); } }
+@keyframes al-spin-ccw { to { transform: rotate(-360deg); } }
+@keyframes al-breathe { 0%,100% { opacity: 0.5; transform: scale(1);} 50% { opacity: 0.85; transform: scale(1.08);} }
+@keyframes al-pulse { 0%,100% { opacity: 0.5; transform: scale(1);} 50% { opacity: 1; transform: scale(1.4);} }
+@keyframes al-fade { 0%,100% { opacity: 0.4;} 50% { opacity: 0.85;} }
