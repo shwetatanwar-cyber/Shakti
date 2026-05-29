@@ -63,12 +63,24 @@ const OracleFunnel = ({
     timezoneOffset: IST_OFFSET,
   });
   const [partnerOpen, setPartnerOpen] = useState(false);
-  const [partner, setPartner] = useState({
+  const [partner, setPartner] = useState<{
+    name: string;
+    gender: string;
+    dob: string;
+    time: string;
+    location: string;
+    lat: number | null;
+    lng: number | null;
+    timezoneOffset: number;
+  }>({
     name: '',
     gender: '',
     dob: '',
     time: '',
     location: '',
+    lat: null,
+    lng: null,
+    timezoneOffset: IST_OFFSET,
   });
   const [focus, setFocus] = useState('');
   const [overview, setOverview] = useState('');
@@ -100,7 +112,16 @@ const OracleFunnel = ({
       lng: null,
       timezoneOffset: IST_OFFSET,
     });
-    setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
+    setPartner({
+      name: '',
+      gender: '',
+      dob: '',
+      time: '',
+      location: '',
+      lat: null,
+      lng: null,
+      timezoneOffset: IST_OFFSET,
+    });
     setPartnerOpen(false);
     setFocus('');
     setOverview('');
@@ -193,8 +214,32 @@ const OracleFunnel = ({
         lng: birth.lng as number,
         timezoneOffset: birth.timezoneOffset,
       };
+      const partnerProvided =
+        partnerOpen &&
+        !!partner.dob &&
+        !!partner.time &&
+        !!partner.location.trim() &&
+        partner.lat !== null &&
+        partner.lng !== null;
+      const partnerPayload = partnerProvided
+        ? {
+            name: partner.name.trim() || null,
+            gender: partner.gender || null,
+            date: partner.dob,
+            time: partner.time,
+            location: partner.location,
+            lat: partner.lat as number,
+            lng: partner.lng as number,
+            timezoneOffset: partner.timezoneOffset,
+          }
+        : null;
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
-        body: { mode: 'report', birth: birthPayload, query: focusVal },
+        body: {
+          mode: 'report',
+          birth: birthPayload,
+          partner: partnerPayload,
+          query: focusVal,
+        },
       });
       if (error) throw error;
       // Ensure the animation plays for at least ~5s for ritual feel
@@ -366,11 +411,22 @@ const OracleFunnel = ({
                   </div>
                   <div>
                     <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Partner's City of Birth</label>
-                    <input
-                      type="text"
+                    <CityAutocomplete
                       value={partner.location}
-                      onChange={(e) => setPartner({ ...partner, location: e.target.value })}
-                      className="w-full mt-1.5 bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                      onSelect={(c) =>
+                        setPartner({
+                          ...partner,
+                          location: `${c.name}, ${c.state}`,
+                          lat: c.lat,
+                          lng: c.lng,
+                        })
+                      }
+                      onClear={() =>
+                        setPartner((p) => ({ ...p, location: '', lat: null, lng: null }))
+                      }
+                      placeholder="e.g. Mumbai, Maharashtra"
+                      className="mt-1.5"
+                      inputClassName="w-full bg-background/40 border border-muted-foreground/20 rounded-lg px-3 py-2.5 font-body text-sm text-foreground/90 placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                     />
                   </div>
                 </div>

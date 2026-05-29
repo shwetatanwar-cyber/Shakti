@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { mode, birth, history, query } = body as {
+    const { mode, birth, partner, history, query } = body as {
       mode: "report" | "chat";
       birth?: {
         date: string;
@@ -47,28 +47,37 @@ Deno.serve(async (req) => {
         lng: number;
         timezoneOffset: number;
       };
+      partner?: {
+        name?: string | null;
+        gender?: string | null;
+        date: string;
+        time: string;
+        location: string;
+        lat: number;
+        lng: number;
+        timezoneOffset: number;
+      } | null;
       history?: { role: "user" | "assistant"; content: string }[];
       query?: string;
     };
 
     let skyDataString = "";
+    let partnerDataString = "";
 
-    if (mode === "report" && birth) {
-      const { date, time, lat, lng, timezoneOffset } = birth;
-      if (lat === undefined || lng === undefined || timezoneOffset === undefined) {
-        throw new Error("Missing physical coordinates or timezone metrics.");
-      }
-
-      const [year, month, day] = date.split("-").map(Number);
-      const [hour, min] = time.split(":").map(Number);
-
-      // Local time -> UTC
+    const computeChart = (b: {
+      date: string;
+      time: string;
+      lat: number;
+      lng: number;
+      timezoneOffset: number;
+    }) => {
+      const [year, month, day] = b.date.split("-").map(Number);
+      const [hour, min] = b.time.split(":").map(Number);
       const utcMs =
         Date.UTC(year, month - 1, day, hour, min, 0) -
-        Math.round(timezoneOffset * 3600 * 1000);
+        Math.round(b.timezoneOffset * 3600 * 1000);
       const utDate = new Date(utcMs);
       const astroTime = new AstroTime(utDate);
-      // Julian Date (UT)
       const jd = 2451545.0 + astroTime.ut;
       const ayan = lahiriAyanamsa(jd);
 
@@ -92,7 +101,6 @@ Deno.serve(async (req) => {
         };
       });
 
-      // Mean lunar node (Rahu) — Meeus mean node formula
       const T = (jd - 2451545.0) / 36525;
       const meanNodeTrop = norm360(
         125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000,
@@ -104,29 +112,58 @@ Deno.serve(async (req) => {
         degree: rahuSid % 30,
       });
 
-      // Ascendant (Lagna) using local sidereal time
       const D = jd - 2451545.0;
       const gmstDeg = norm360(280.46061837 + 360.98564736629 * D);
-      const lstDeg = norm360(gmstDeg + lng); // RAMC
+      const lstDeg = norm360(gmstDeg + b.lng);
       const ramc = (lstDeg * Math.PI) / 180;
       const obl = (23.4392911 * Math.PI) / 180;
-      const latRad = (lat * Math.PI) / 180;
-      let ascRad = Math.atan2(
+      const latRad = (b.lat * Math.PI) / 180;
+      const ascRad = Math.atan2(
         Math.cos(ramc),
         -(Math.sin(ramc) * Math.cos(obl) + Math.tan(latRad) * Math.sin(obl)),
       );
       let ascTrop = norm360((ascRad * 180) / Math.PI);
-      // Ensure ascendant is in the correct half (opposite RAMC ± 180 for eastern horizon)
       if (ascTrop < lstDeg) ascTrop = norm360(ascTrop + 180);
       const ascSid = norm360(ascTrop - ayan);
-      const ascSign = ZODIAC_SIGNS[Math.floor(ascSid / 30)];
-      const ascDegree = ascSid % 30;
+      return {
+        ascSign: ZODIAC_SIGNS[Math.floor(ascSid / 30)],
+        ascDegree: ascSid % 30,
+        planetaryPositions,
+      };
+    };
 
+    if (mode === "report" && birth) {
+      if (
+        birth.lat === undefined ||
+        birth.lng === undefined ||
+        birth.timezoneOffset === undefined
+      ) {
+        throw new Error("Missing physical coordinates or timezone metrics.");
+      }
+
+      const userChart = computeChart(birth);
       skyDataString = `[REAL ASTRONOMICAL METADATA - BASE YOUR CONCRETE PREDICTIONS ONLY ON THIS]
-User Lagna (Ascendant): ${ascDegree.toFixed(1)} degrees in ${ascSign}
+User Lagna (Ascendant): ${userChart.ascDegree.toFixed(1)} degrees in ${userChart.ascSign}
 Planetary Sign Positions:
-${planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p.degree.toFixed(1)}°`).join("\n")}
+${userChart.planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p.degree.toFixed(1)}°`).join("\n")}
 \n`;
+
+      if (
+        partner &&
+        partner.date &&
+        partner.time &&
+        partner.lat !== undefined &&
+        partner.lng !== undefined &&
+        partner.timezoneOffset !== undefined
+      ) {
+        const partnerChart = computeChart(partner);
+        const partnerLabel = partner.name?.trim() || "Partner";
+        partnerDataString = `[PARTNER ASTRONOMICAL METADATA - USE FOR COMPATIBILITY/SYNASTRY ONLY]
+${partnerLabel} Lagna (Ascendant): ${partnerChart.ascDegree.toFixed(1)} degrees in ${partnerChart.ascSign}
+${partnerLabel} Planetary Sign Positions:
+${partnerChart.planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p.degree.toFixed(1)}°`).join("\n")}
+\n`;
+      }
     }
 
     const messages: { role: string; content: string }[] = [
@@ -136,9 +173,12 @@ ${planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p.degree.toFix
     if (mode === "report") {
       const userInquiry =
         query && query.trim() !== "" ? query.trim() : "General life direction and mental peace";
+      const compatibilityNote = partnerDataString
+        ? `\nThe user has also shared their partner's birth details. Weave in a brief, gentle compatibility insight (synastry — e.g. Moon/Venus/Mars/Lagna interplay between the two charts) that speaks to their query. Reference at least one real planetary touchpoint between the two charts to prove the reading is real. Do not list both charts mechanically — keep it emotional and reassuring.\n`
+        : "";
       messages.push({
         role: "user",
-        content: `${skyDataString}User's Core Query/Anxiety: "${userInquiry}"\n\n${REPORT_PROMPT}`,
+        content: `${skyDataString}${partnerDataString}User's Core Query/Anxiety: "${userInquiry}"\n${compatibilityNote}\n${REPORT_PROMPT}`,
       });
     } else {
       if (history) messages.push(...history);
