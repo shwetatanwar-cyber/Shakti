@@ -3,6 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
 import { trackGAEvent, trackMetaEvent } from '@/utils/analytics';
 import { toast } from '@/hooks/use-toast';
+import CityAutocomplete from '@/components/CityAutocomplete';
+
+const IST_OFFSET = 5.5;
 
 type Stage =
   | 'closed'
@@ -40,7 +43,25 @@ const OracleFunnel = ({
   ctaPosition = 'hero_inline',
 }: Props) => {
   const [stage, setStage] = useState<Stage>('closed');
-  const [birth, setBirth] = useState({ name: '', gender: '', date: '', time: '', location: '' });
+  const [birth, setBirth] = useState<{
+    name: string;
+    gender: string;
+    date: string;
+    time: string;
+    location: string;
+    lat: number | null;
+    lng: number | null;
+    timezoneOffset: number;
+  }>({
+    name: '',
+    gender: '',
+    date: '',
+    time: '',
+    location: '',
+    lat: null,
+    lng: null,
+    timezoneOffset: IST_OFFSET,
+  });
   const [partnerOpen, setPartnerOpen] = useState(false);
   const [partner, setPartner] = useState({
     name: '',
@@ -69,7 +90,16 @@ const OracleFunnel = ({
   const close = () => setStage('closed');
   const resetAll = () => {
     setStage('closed');
-    setBirth({ name: '', gender: '', date: '', time: '', location: '' });
+    setBirth({
+      name: '',
+      gender: '',
+      date: '',
+      time: '',
+      location: '',
+      lat: null,
+      lng: null,
+      timezoneOffset: IST_OFFSET,
+    });
     setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
     setPartnerOpen(false);
     setFocus('');
@@ -155,8 +185,16 @@ const OracleFunnel = ({
     }
 
     try {
+      const birthPayload = {
+        date: birth.date,
+        time: birth.time,
+        location: birth.location,
+        lat: birth.lat as number,
+        lng: birth.lng as number,
+        timezoneOffset: birth.timezoneOffset,
+      };
       const { data, error } = await supabase.functions.invoke('oracle-chat', {
-        body: { mode: 'report', birth, focus: focusVal },
+        body: { mode: 'report', birth: birthPayload, focus: focusVal },
       });
       if (error) throw error;
       // Ensure the animation plays for at least ~5s for ritual feel
@@ -181,7 +219,9 @@ const OracleFunnel = ({
         !!birth.gender &&
         !!birth.date &&
         !!birth.time &&
-        !!birth.location.trim();
+        !!birth.location.trim() &&
+        birth.lat !== null &&
+        birth.lng !== null;
       const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
@@ -241,12 +281,22 @@ const OracleFunnel = ({
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">City of Birth</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Mumbai, India"
+                <CityAutocomplete
                   value={birth.location}
-                  onChange={(e) => setBirth({ ...birth, location: e.target.value })}
-                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  onSelect={(c) =>
+                    setBirth({
+                      ...birth,
+                      location: `${c.name}, ${c.state}`,
+                      lat: c.lat,
+                      lng: c.lng,
+                    })
+                  }
+                  onClear={() =>
+                    setBirth((b) => ({ ...b, location: '', lat: null, lng: null }))
+                  }
+                  placeholder="e.g. Mumbai, Maharashtra"
+                  className="mt-1.5"
+                  inputClassName="w-full bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
                 />
               </div>
             </div>
@@ -469,17 +519,34 @@ const OracleFunnel = ({
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Place of Birth</label>
-                <input
-                  type="text"
-                  placeholder="City, Country"
+                <CityAutocomplete
                   value={birth.location}
-                  onChange={(e) => setBirth({ ...birth, location: e.target.value })}
-                  className="w-full mt-2 bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-base placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors"
+                  onSelect={(c) =>
+                    setBirth({
+                      ...birth,
+                      location: `${c.name}, ${c.state}`,
+                      lat: c.lat,
+                      lng: c.lng,
+                    })
+                  }
+                  onClear={() =>
+                    setBirth((b) => ({ ...b, location: '', lat: null, lng: null }))
+                  }
+                  placeholder="Start typing your city…"
+                  className="mt-2"
+                  inputClassName="w-full bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-base placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
             </div>
             <button
-              disabled={!birth.name.trim() || !birth.date || !birth.time || !birth.location}
+              disabled={
+                !birth.name.trim() ||
+                !birth.date ||
+                !birth.time ||
+                !birth.location ||
+                birth.lat === null ||
+                birth.lng === null
+              }
               onClick={() => {
                 trackGAEvent('birth_details_submit', {
                   has_date: !!birth.date,
