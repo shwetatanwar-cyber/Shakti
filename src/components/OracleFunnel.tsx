@@ -63,12 +63,24 @@ const OracleFunnel = ({
     timezoneOffset: IST_OFFSET,
   });
   const [partnerOpen, setPartnerOpen] = useState(false);
-  const [partner, setPartner] = useState({
+  const [partner, setPartner] = useState<{
+    name: string;
+    gender: string;
+    dob: string;
+    time: string;
+    location: string;
+    lat: number | null;
+    lng: number | null;
+    timezoneOffset: number;
+  }>({
     name: '',
     gender: '',
     dob: '',
     time: '',
     location: '',
+    lat: null,
+    lng: null,
+    timezoneOffset: IST_OFFSET,
   });
   const [focus, setFocus] = useState('');
   const [overview, setOverview] = useState('');
@@ -100,7 +112,16 @@ const OracleFunnel = ({
       lng: null,
       timezoneOffset: IST_OFFSET,
     });
-    setPartner({ name: '', gender: '', dob: '', time: '', location: '' });
+    setPartner({
+      name: '',
+      gender: '',
+      dob: '',
+      time: '',
+      location: '',
+      lat: null,
+      lng: null,
+      timezoneOffset: IST_OFFSET,
+    });
     setPartnerOpen(false);
     setFocus('');
     setOverview('');
