@@ -38,7 +38,63 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <style>
+      #app-loader{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;background:radial-gradient(ellipse at 50% 40%,#1a0a2e 0%,#0a0510 60%,#050208 100%);z-index:9999;font-family:Georgia,serif}
+      #app-loader .al-glow{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.45),rgba(255,154,61,.2) 45%,transparent 70%);filter:blur(40px);animation:al-breathe 6s ease-in-out infinite}
+      #app-loader .al-wheel{position:relative;width:180px;height:180px;mix-blend-mode:screen}
+      #app-loader .al-ring{transform-origin:100px 100px}
+      #app-loader .al-ring-1{animation:al-spin-ccw 18s linear infinite}
+      #app-loader .al-ring-2{animation:al-spin-cw 9s linear infinite}
+      #app-loader .al-ring-3{animation:al-spin-ccw 6s linear infinite}
+      #app-loader .al-bindu{animation:al-pulse 2.4s ease-in-out infinite;transform-origin:100px 100px}
+      #app-loader .al-label{position:relative;font-style:italic;font-size:.95rem;letter-spacing:.25em;text-transform:lowercase;color:#e8e0cf;opacity:.6;animation:al-fade 2.4s ease-in-out infinite}
+      @keyframes al-spin-cw{to{transform:rotate(360deg)}}
+      @keyframes al-spin-ccw{to{transform:rotate(-360deg)}}
+      @keyframes al-breathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.85;transform:scale(1.08)}}
+      @keyframes al-pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+      @keyframes al-fade{0%,100%{opacity:.4}50%{opacity:.85}}
+    </style>
+    <div id="root">
+      <div id="app-loader" aria-hidden="true">
+        <div class="al-glow"></div>
+        <svg class="al-wheel" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="alCore" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff9a3d" stop-opacity="0.9"/>
+              <stop offset="50%" stop-color="#7c3aed" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="alStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff9a3d"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="92" fill="url(#alCore)" opacity="0.35"/>
+          <g class="al-ring al-ring-1">
+            <circle cx="100" cy="100" r="88" fill="none" stroke="#e8e0cf" stroke-opacity="0.25"/>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#e8e0cf" stroke-opacity="0.18" stroke-dasharray="1 5"/>
+          </g>
+          <g class="al-ring al-ring-2">
+            <circle cx="100" cy="100" r="70" fill="none" stroke="#ff9a3d" stroke-opacity="0.45"/>
+            <g fill="#ff9a3d" fill-opacity="0.7">
+              <circle cx="100" cy="30" r="2.2"/><circle cx="170" cy="100" r="2.2"/>
+              <circle cx="100" cy="170" r="2.2"/><circle cx="30" cy="100" r="2.2"/>
+              <circle cx="150" cy="50" r="1.8"/><circle cx="150" cy="150" r="1.8"/>
+              <circle cx="50" cy="150" r="1.8"/><circle cx="50" cy="50" r="1.8"/>
+            </g>
+          </g>
+          <g class="al-ring al-ring-3">
+            <polygon points="100,45 147,72 147,128 100,155 53,128 53,72"
+              fill="none" stroke="url(#alStroke)" stroke-opacity="0.7" stroke-width="0.9"/>
+            <polygon points="100,155 53,72 147,72" fill="none" stroke="#a855f7" stroke-opacity="0.45" stroke-width="0.7"/>
+            <polygon points="100,45 53,128 147,128" fill="none" stroke="#a855f7" stroke-opacity="0.45" stroke-width="0.7"/>
+          </g>
+          <circle cx="100" cy="100" r="22" fill="url(#alCore)"/>
+          <circle class="al-bindu" cx="100" cy="100" r="3" fill="#f4ecd8"/>
+        </svg>
+        <p class="al-label">Aligning the cosmos…</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- Meta Pixel Code (deferred to body end so it never blocks DOM parsing) -->
