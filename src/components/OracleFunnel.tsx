@@ -519,17 +519,34 @@ const OracleFunnel = ({
               </div>
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Place of Birth</label>
-                <input
-                  type="text"
-                  placeholder="City, Country"
+                <CityAutocomplete
                   value={birth.location}
-                  onChange={(e) => setBirth({ ...birth, location: e.target.value })}
-                  className="w-full mt-2 bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-base placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors"
+                  onSelect={(c) =>
+                    setBirth({
+                      ...birth,
+                      location: `${c.name}, ${c.state}`,
+                      lat: c.lat,
+                      lng: c.lng,
+                    })
+                  }
+                  onClear={() =>
+                    setBirth((b) => ({ ...b, location: '', lat: null, lng: null }))
+                  }
+                  placeholder="Start typing your city…"
+                  className="mt-2"
+                  inputClassName="w-full bg-transparent border-b border-muted-foreground/30 pb-2 font-body text-base placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
             </div>
             <button
-              disabled={!birth.name.trim() || !birth.date || !birth.time || !birth.location}
+              disabled={
+                !birth.name.trim() ||
+                !birth.date ||
+                !birth.time ||
+                !birth.location ||
+                birth.lat === null ||
+                birth.lng === null
+              }
               onClick={() => {
                 trackGAEvent('birth_details_submit', {
                   has_date: !!birth.date,
