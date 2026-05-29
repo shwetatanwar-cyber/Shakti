@@ -37,8 +37,9 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { mode, birth, partner, history, query } = body as {
+    const { mode, birth, partner, history, query, name } = body as {
       mode: "report" | "chat";
+      name?: string | null;
       birth?: {
         date: string;
         time: string;
@@ -176,9 +177,13 @@ ${partnerChart.planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p
       const compatibilityNote = partnerDataString
         ? `\nThe user has also shared their partner's birth details. Weave in a brief, gentle compatibility insight (synastry — e.g. Moon/Venus/Mars/Lagna interplay between the two charts) that speaks to their query. Reference at least one real planetary touchpoint between the two charts to prove the reading is real. Do not list both charts mechanically — keep it emotional and reassuring.\n`
         : "";
+      const userName = (name ?? "").toString().trim();
+      const nameNote = userName
+        ? `\nThe user's name is "${userName}". Address her by her first name naturally — open the reading with her name (e.g. "${userName.split(/\s+/)[0]}, ...") and use it gently 1-2 more times across the reading so it feels personal. Never overuse it.\n`
+        : "";
       messages.push({
         role: "user",
-        content: `${skyDataString}${partnerDataString}User's Core Query/Anxiety: "${userInquiry}"\n${compatibilityNote}\n${REPORT_PROMPT}`,
+        content: `${skyDataString}${partnerDataString}User's Core Query/Anxiety: "${userInquiry}"\n${nameNote}${compatibilityNote}\n${REPORT_PROMPT}`,
       });
     } else {
       if (history) messages.push(...history);

@@ -239,6 +239,7 @@ const OracleFunnel = ({
           birth: birthPayload,
           partner: partnerPayload,
           query: focusVal,
+          name: birth.name?.trim() || null,
         },
       });
       if (error) throw error;
