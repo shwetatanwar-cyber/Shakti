@@ -171,6 +171,7 @@ ${planetaryPositions.map((p) => `- ${p.name} is in ${p.sign} at ${p.degree.toFix
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
+    console.error("oracle-chat error:", e, (e as Error)?.stack);
     return new Response(JSON.stringify({ error: (e as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
