@@ -274,7 +274,7 @@ const OracleFunnel = ({
     setCalcIdx(0);
     const id = setInterval(() => {
       setCalcIdx((i) => (i + 1) % calcSteps.length);
-    }, 1400);
+    }, 1700);
     return () => clearInterval(id);
   }, [stage, calcSteps.length]);
 
@@ -422,9 +422,9 @@ const OracleFunnel = ({
         },
       });
       if (error) throw error;
-      // Ensure the animation plays for at least ~5s for ritual feel
+      // Ensure the animation plays long enough for every personalized step to be legible
       const elapsed = Date.now() - started;
-      const wait = Math.max(0, 5000 - elapsed);
+      const wait = Math.max(0, calcSteps.length * 1700 - elapsed);
       setTimeout(() => {
         setOverview(data?.text || '');
         setLocked('');
@@ -887,7 +887,7 @@ const OracleFunnel = ({
                 }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-display italic text-bone text-2xl drop-shadow-lg">॥</span>
+                <span className="font-display italic text-bone text-2xl drop-shadow-lg">✦</span>
               </div>
             </div>
 
@@ -1114,7 +1114,7 @@ const ReportDossier = ({
         <div className="px-4 md:px-6 pt-4 pb-10 max-w-2xl mx-auto">
           {/* SECTION 01 — FREE READING (no container, continuous document) */}
           <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-            01 // YOUR READING
+            01 <span className="text-accent/70">✦</span> YOUR READING
           </p>
           <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap mt-2">
             {displayOverview}
@@ -1160,7 +1160,7 @@ const ReportDossier = ({
             return (
               <div key={sec.num} className="mt-4">
                 <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-                  {sec.num} // {sec.tag}
+                  {sec.num} <span className="text-accent/70">✦</span> {sec.tag}
                 </p>
                 <p
                   className="font-body text-sm md:text-base text-bone leading-relaxed mt-2 pointer-events-none select-none"
