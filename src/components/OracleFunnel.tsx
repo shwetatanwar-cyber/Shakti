@@ -57,13 +57,14 @@ const classifyQuery = (q: string): QueryCategory => {
 
 const LOCKED_SECTIONS: Record<
   QueryCategory,
-  { num: string; tag: string; title: string; bullets: string[] }[]
+  { num: string; tag: string; firstLine: (name: string) => string; bullets: string[] }[]
 > = {
   RELATIONSHIP: [
     {
       num: '02',
       tag: 'THE TIMELINE',
-      title: 'The Next 12 Months: When will your love life become clear?',
+      firstLine: (n) =>
+        `${n}, I see a major shift from your current planetary alignment in the next…`,
       bullets: [
         'The exact dates when the fights, distance, or silence between you two will stop.',
         'The true reasons or outside energies causing misunderstandings or secrets right now.',
@@ -72,7 +73,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '03',
       tag: 'THE PATTERN',
-      title: 'The Inner Patterns Holding Your Relationship Back',
+      firstLine: (n) =>
+        `${n}, your chart reveals a repetitive emotional cycle that was triggered during…`,
       bullets: [
         'Why you get hurt so easily and keep overthinking every little detail about your partner.',
         'The hidden habits or actions you need to change today to save your bond from cracking.',
@@ -81,7 +83,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '04',
       tag: 'THE RESOLUTION',
-      title: 'Simple Actions to Fix Your Connection',
+      firstLine: (n) =>
+        `${n}, to shift this heavy energy, there is a specific, simple daily action that…`,
       bullets: [
         'An easy daily routine to bring back trust, peace, and deep attraction between you two.',
         'Exactly what to say or do next to remove negative thoughts and feel safe again.',
@@ -92,7 +95,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '02',
       tag: 'THE TIMELINE',
-      title: 'The Next 12 Months: When will your career and money grow?',
+      firstLine: (n) =>
+        `${n}, I have good news. A major, heavy Mahadasha phase is ending for you in the next…`,
       bullets: [
         'The exact dates for your next big job change, promotion, or salary hike.',
         'Dangerous months ahead where you must protect your money and avoid risky steps.',
@@ -101,7 +105,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '03',
       tag: 'THE BLOCK',
-      title: 'The Hidden Reason You Are Feeling Stuck',
+      firstLine: (n) =>
+        `${n}, your 10th house shows a very specific professional block that explains why…`,
       bullets: [
         'Why your hard work is not being noticed by your bosses or managers.',
         'An unconscious mental block that is stopping you from reaching your true power.',
@@ -110,7 +115,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '04',
       tag: 'THE RESOLUTION',
-      title: 'Simple Steps to Unlock Success',
+      firstLine: (n) =>
+        `${n}, to unlock your financial flow, your chart alignment requires a clean morning…`,
       bullets: [
         'An easy morning ritual tailored to your birth chart to attract money and luck.',
         'Clear, step-by-step guidance on how to fix your confusion and pick the right path.',
@@ -121,7 +127,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '02',
       tag: 'THE TIMELINE',
-      title: 'The Next 12 Months: When will your life become easy?',
+      firstLine: (n) =>
+        `Looking at your chart, ${n}, the heavy mental fog you are carrying is preparing to…`,
       bullets: [
         'The exact dates when your heavy stress, sadness, and anxiety will finally end.',
         'Beautiful, positive cycles ahead for your health, peace of mind, and happiness.',
@@ -130,7 +137,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '03',
       tag: 'THE ROOT',
-      title: 'The Real Root of Your Overthinking',
+      firstLine: (n) =>
+        `${n}, your moon placement indicates a deeply rooted pattern from your past that…`,
       bullets: [
         'The exact placement in your chart that causes your mind to constantly fear the worst.',
         'A deep pattern from your past that is secretly draining your energy every single day.',
@@ -139,7 +147,8 @@ const LOCKED_SECTIONS: Record<
     {
       num: '04',
       tag: 'THE RESOLUTION',
-      title: 'Simple Remedies for Lasting Peace',
+      firstLine: (n) =>
+        `${n}, your immediate path to peace requires shifting your energy hours during…`,
       bullets: [
         'A short 5-minute daily breathing or mindfulness exercise unique to your birth stars.',
         'How to alter your daily sleep and morning hours to clear your confusion instantly.',
@@ -149,13 +158,12 @@ const LOCKED_SECTIONS: Record<
 };
 
 const BLUR_LOREM = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  'Saturn 24°12′ · Jupiter retrograde · Moon Rohini · Lagna lord placement triggers a subtle dasha pivot across the 7th bhava axis with mild friction in the 11th house gains line.',
-  'Vimshottari progression: Rahu mahadasha → Jupiter antardasha · 11 months · followed by Saturn pratyantar across the natal Mars in 4th house. Outer transit Saturn squares natal Venus during Feb–Apr window.',
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Nullam ac erat ante. Vivamus lacinia odio vitae vestibulum.',
-  'Ashtakavarga score: 28 · Bhinnashtakavarga of Jupiter in 5H is strong · Sade Sati phase enters its final pada with relief markers between the 14th and 22nd lunar nights.',
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec id elit non mi porta gravida at eget metus.',
+  'Saturn at 24°12′ in your 7th house forms a tight square with natal Venus, while Jupiter retrograde across the Rohini pada quietly reshapes the lagna lord placement and its dasha pivot into the next quarter.',
+  'The Vimshottari progression now moves from Rahu mahadasha into a Jupiter antardasha lasting eleven months, with Saturn pratyantar overlaying your natal Mars in the 4th house through the spring transit window.',
+  'Your Ashtakavarga score of 28 with a strong Bhinnashtakavarga of Jupiter in the 5th, paired with the closing pada of Sade Sati, points to clear relief markers between the 14th and 22nd lunar nights of the coming cycle.',
+  'Moon in Rohini conjunct natal Mercury triggers a soft nakshatra exchange with the 11th house gains line, easing accumulated friction across the bhava axis and opening a calmer mental field for new decisions.',
+  'A subtle yoga between Venus and the 5th lord activates as outer Saturn unwinds its square, gradually thinning the emotional fog and restoring confidence across the karaka houses of your chart.',
+  'The transit cluster across the 10th and 11th houses gathers momentum toward a stationing point, after which a long-pending decision finds its natural resolution without the usual delay or interference.',
 ];
 
 const OracleFunnel = ({
@@ -858,6 +866,7 @@ const OracleFunnel = ({
           <ReportDossier
             overview={overview}
             query={focus}
+            name={birth.name?.trim() || 'friend'}
             stage={stage}
             onUnlock={() => {
               trackGAEvent('payment_initiate', {
@@ -1025,12 +1034,14 @@ const Paywall = ({
 const ReportDossier = ({
   overview,
   query,
+  name,
   stage,
   onUnlock,
   onReset,
 }: {
   overview: string;
   query: string;
+  name: string;
   stage: Stage;
   onUnlock: () => void;
   onReset: () => void;
@@ -1044,52 +1055,70 @@ const ReportDossier = ({
       style={{ background: '#0b0b0f' }}
     >
       <div className="flex-1 min-h-0 overflow-y-auto pr-1">
-        <div className="space-y-4 pb-8">
-          {/* SECTION 01 — FREE READING */}
-          <div className="glass-tile p-5 md:p-7 relative overflow-hidden">
-            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-              01 // YOUR READING
-            </p>
-            <h3 className="font-display text-xl md:text-2xl font-light italic mt-1.5 mb-3 text-bone leading-snug">
-              A message from Tara.
-            </h3>
-            <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap">
-              {overview}
-            </div>
-            {/* Mid-thought blur fade */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
-              style={{ backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)' }}
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b0b0f] via-[#0b0b0f]/70 to-transparent"
-            />
+        <div className="px-4 md:px-6 pt-4 pb-10 max-w-2xl mx-auto">
+          {/* SECTION 01 — FREE READING (no container, continuous document) */}
+          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+            01 // YOUR READING
+          </p>
+          <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap mt-2">
+            {overview}
           </div>
 
-          {/* SECTIONS 02 / 03 / 04 — LOCKED HEADERS + BLURRED PLACEHOLDERS */}
+          {/* Trailing blurred continuation of Section 01 — looks like text fades away */}
+          <div
+            aria-hidden
+            className="mt-3 space-y-2 blur-md opacity-20 pointer-events-none select-none"
+          >
+            {BLUR_LOREM.slice(0, 3).map((c, i) => (
+              <p key={i} className="font-body text-sm md:text-base leading-relaxed text-foreground/80">
+                {c}
+              </p>
+            ))}
+          </div>
+
+          {/* SECTIONS 02 / 03 / 04 — headers + visible first line + locked bullets + blurred body */}
           {sections.map((sec, idx) => (
-            <div key={sec.num} className="space-y-2.5">
-              <CrispHeader
-                num={sec.num}
-                tag={sec.tag}
-                title={sec.title}
-                bullets={sec.bullets}
-              />
-              <div className="glass-tile p-5 md:p-6 relative overflow-hidden">
-                <BlurredBlock
-                  chunks={BLUR_LOREM
-                    .slice(idx % BLUR_LOREM.length)
-                    .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length))
-                    .slice(0, 3)}
-                />
+            <div key={sec.num} className="mt-4">
+              <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+                {sec.num} // {sec.tag}
+              </p>
+              <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed mt-2">
+                {sec.firstLine(name)}
+              </p>
+              <ul className="mt-3 space-y-2">
+                {sec.bullets.map((b, i) => (
+                  <li
+                    key={i}
+                    className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
+                  >
+                    <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+              <div
+                aria-hidden
+                className="mt-3 space-y-2 select-none"
+                style={{ filter: 'blur(12px)', opacity: 0.22, pointerEvents: 'none' }}
+              >
+                {BLUR_LOREM
+                  .slice(idx % BLUR_LOREM.length)
+                  .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length))
+                  .slice(0, 2 + (idx % 2))
+                  .map((c, i) => (
+                    <p
+                      key={i}
+                      className="font-body text-sm md:text-base text-foreground/80 leading-relaxed"
+                    >
+                      {c}
+                    </p>
+                  ))}
               </div>
             </div>
           ))}
 
           {stage === 'paid' && (
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 pt-6">
               <p className="text-center font-body text-xs tracking-[0.3em] uppercase text-accent animate-pulse">
                 ✦ Dialogue Unlocked · The Shadow is listening
               </p>
@@ -1136,54 +1165,5 @@ const ReportDossier = ({
     </div>
   );
 };
-
-const CrispHeader = ({
-  num,
-  tag,
-  title,
-  bullets,
-}: {
-  num: string;
-  tag: string;
-  title: string;
-  bullets: string[];
-}) => (
-  <div className="relative z-10 glass-tile p-6 md:p-7 border-accent/30">
-    <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-      {num} // {tag}
-    </p>
-    <h4 className="font-display text-xl md:text-2xl font-light italic mt-2 text-bone leading-snug">
-      {title}
-    </h4>
-    <ul className="mt-4 space-y-2.5">
-      {bullets.map((b, i) => (
-        <li
-          key={i}
-          className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
-        >
-          <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
-          <span>{b}</span>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
-const BlurredBlock = ({ chunks }: { chunks: string[] }) => (
-  <div
-    aria-hidden
-    className="space-y-3 select-none pointer-events-none"
-    style={{ filter: 'blur(14px)', opacity: 0.25, pointerEvents: 'none' }}
-  >
-    {chunks.map((c, i) => (
-      <p
-        key={i}
-        className="font-body text-sm text-foreground/80 leading-relaxed"
-      >
-        {c}
-      </p>
-    ))}
-  </div>
-);
 
 export default OracleFunnel;
