@@ -899,7 +899,7 @@ const OracleFunnel = ({
                 key={calcIdx}
                 className="font-display italic text-base md:text-lg text-muted-foreground animate-in fade-in duration-500"
               >
-                {CALC_STEPS[calcIdx]}
+                {calcSteps[calcIdx]}
               </p>
             </div>
 
