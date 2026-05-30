@@ -849,60 +849,21 @@ const OracleFunnel = ({
 
         {/* REPORT — single continuous reading + paywall CTA */}
         {(stage === 'report' || stage === 'paywall' || stage === 'paid') && (
-          <div className="space-y-6 animate-in fade-in duration-700 max-h-[85vh] overflow-y-auto pr-2">
-            <div className="text-center">
-              <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-                Your Reading
-              </p>
-              <h3 className="font-display text-2xl md:text-3xl font-light italic mt-2">
-                A message from Tara.
-              </h3>
-            </div>
-
-            {/* Single continuous text block */}
-            <div className="glass-tile p-6 md:p-10">
-              <div className="font-body text-base md:text-lg text-foreground/90 leading-loose whitespace-pre-wrap">
-                {overview}
-              </div>
-            </div>
-
-            {stage !== 'paid' && (
-              <div className="glass-tile px-6 py-6 max-w-md mx-auto text-center space-y-3 border-accent/30">
-                <Lock className="w-5 h-5 mx-auto text-accent" />
-                <button
-                  onClick={() => {
-                    trackGAEvent('payment_initiate', {
-                      price_point: 199,
-                      currency: 'INR',
-                      conversion_tier: 'premium_oracle_chat',
-                    });
-                    trackMetaEvent('InitiateCheckout');
-                    setStage('paywall');
-                  }}
-                  className="w-full font-body text-xs tracking-[0.3em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> Unlock full report for ₹199
-                </button>
-                <p className="font-body text-xs text-muted-foreground">
-                  And get your free 5 minutes consultation with Tara
-                </p>
-              </div>
-            )}
-
-            {stage === 'paid' && (
-              <div className="space-y-4">
-                <p className="text-center font-body text-xs tracking-[0.3em] uppercase text-accent animate-pulse">
-                  ✦ Dialogue Unlocked · The Shadow is listening
-                </p>
-                <button
-                  onClick={resetAll}
-                  className="mx-auto block font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Begin New Session
-                </button>
-              </div>
-            )}
-          </div>
+          <ReportDossier
+            overview={overview}
+            query={focus}
+            stage={stage}
+            onUnlock={() => {
+              trackGAEvent('payment_initiate', {
+                price_point: 199,
+                currency: 'INR',
+                conversion_tier: 'premium_oracle_chat',
+              });
+              trackMetaEvent('InitiateCheckout');
+              setStage('paywall');
+            }}
+            onReset={resetAll}
+          />
         )}
 
         {stage === 'paywall' && (
