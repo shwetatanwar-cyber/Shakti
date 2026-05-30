@@ -1067,13 +1067,25 @@ const ReportDossier = ({
           {/* Trailing blurred continuation of Section 01 — looks like text fades away */}
           <div
             aria-hidden
-            className="mt-3 space-y-2 blur-md opacity-60 pointer-events-none select-none"
+            className="mt-3 space-y-2 pointer-events-none select-none"
           >
-            {BLUR_LOREM.slice(0, 3).map((c, i) => (
-              <p key={i} className="font-body text-sm md:text-base leading-relaxed text-bone">
-                {c}
-              </p>
-            ))}
+            {BLUR_LOREM.slice(0, 2).map((c, i) => {
+              // gradient blur: first paragraph eases in from sharp → soft, second goes fully hazy
+              const steps = [
+                { blur: 2, opacity: 0.75 },
+                { blur: 7, opacity: 0.45 },
+              ];
+              const { blur, opacity } = steps[i];
+              return (
+                <p
+                  key={i}
+                  className="font-body text-sm md:text-base leading-relaxed text-bone"
+                  style={{ filter: `blur(${blur}px)`, opacity }}
+                >
+                  {c}
+                </p>
+              );
+            })}
           </div>
 
           {/* SECTIONS 02 / 03 / 04 — headers + visible first line + locked bullets + blurred body */}
