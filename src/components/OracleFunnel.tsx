@@ -55,6 +55,15 @@ const classifyQuery = (q: string): QueryCategory => {
   return 'GENERAL_PEACE';
 };
 
+const capitalizeName = (raw: string) => {
+  const s = (raw || '').trim();
+  if (!s) return 'friend';
+  return s
+    .split(/\s+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+};
+
 const LOCKED_SECTIONS: Record<
   QueryCategory,
   { num: string; tag: string; firstLine: (name: string) => string; bullets: string[] }[]
