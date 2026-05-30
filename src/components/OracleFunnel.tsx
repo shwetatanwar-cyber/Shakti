@@ -61,7 +61,7 @@ const LOCKED_SECTIONS: Record<
 > = {
   RELATIONSHIP: [
     {
-      num: '03',
+      num: '02',
       tag: 'THE TIMELINE',
       title: 'The Next 12 Months: When will your love life become clear?',
       bullets: [
@@ -70,7 +70,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '04',
+      num: '03',
       tag: 'THE PATTERN',
       title: 'The Inner Patterns Holding Your Relationship Back',
       bullets: [
@@ -79,7 +79,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '05',
+      num: '04',
       tag: 'THE RESOLUTION',
       title: 'Simple Actions to Fix Your Connection',
       bullets: [
@@ -90,7 +90,7 @@ const LOCKED_SECTIONS: Record<
   ],
   CAREER: [
     {
-      num: '03',
+      num: '02',
       tag: 'THE TIMELINE',
       title: 'The Next 12 Months: When will your career and money grow?',
       bullets: [
@@ -99,7 +99,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '04',
+      num: '03',
       tag: 'THE BLOCK',
       title: 'The Hidden Reason You Are Feeling Stuck',
       bullets: [
@@ -108,7 +108,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '05',
+      num: '04',
       tag: 'THE RESOLUTION',
       title: 'Simple Steps to Unlock Success',
       bullets: [
@@ -119,7 +119,7 @@ const LOCKED_SECTIONS: Record<
   ],
   GENERAL_PEACE: [
     {
-      num: '03',
+      num: '02',
       tag: 'THE TIMELINE',
       title: 'The Next 12 Months: When will your life become easy?',
       bullets: [
@@ -128,7 +128,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '04',
+      num: '03',
       tag: 'THE ROOT',
       title: 'The Real Root of Your Overthinking',
       bullets: [
@@ -137,7 +137,7 @@ const LOCKED_SECTIONS: Record<
       ],
     },
     {
-      num: '05',
+      num: '04',
       tag: 'THE RESOLUTION',
       title: 'Simple Remedies for Lasting Peace',
       bullets: [
