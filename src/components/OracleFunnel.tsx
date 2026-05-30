@@ -315,7 +315,7 @@ const OracleFunnel = ({
         consultation_category: submissionType,
         session_id: sessionId,
         payment_status: 'pending',
-        name: birth.name.trim() || null,
+        name: capitalizeName(birth.name) || null,
         gender: birth.gender || null,
         partner_name: partnerOpen && partner.name.trim() ? partner.name.trim() : null,
         partner_gender: partnerOpen && partner.gender ? partner.gender : null,
@@ -390,7 +390,7 @@ const OracleFunnel = ({
           birth: birthPayload,
           partner: partnerPayload,
           query: focusVal,
-          name: birth.name?.trim() || null,
+          name: capitalizeName(birth.name) || null,
         },
       });
       if (error) throw error;
