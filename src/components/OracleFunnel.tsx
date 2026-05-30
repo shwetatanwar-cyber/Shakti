@@ -1099,8 +1099,7 @@ const ReportDossier = ({
   const sections = LOCKED_SECTIONS[category];
   const displayName = capitalizeName(name);
   const sanitizedOverview = (overview || '')
-    .replace(/\[\s*message\s+blurred\s*\]/gi, '')
-    .replace(/\[\s*blurred\s*\]/gi, '')
+    .replace(/\[[^\]]*blurred[^\]]*\]/gi, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
   const displayOverview = applyCapitalizedName(sanitizedOverview, name);
@@ -1114,7 +1113,7 @@ const ReportDossier = ({
         <div className="px-4 md:px-6 pt-4 pb-10 max-w-2xl mx-auto">
           {/* SECTION 01 — FREE READING (no container, continuous document) */}
           <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-            01 <span className="text-accent/70">✦</span> YOUR READING
+            01 <span className="text-accent/70">✦</span> OVERVIEW
           </p>
           <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap mt-2">
             {displayOverview}
@@ -1188,18 +1187,13 @@ const ReportDossier = ({
                   ))}
                 </div>
 
-                {/* Bullets sit in the middle of the section */}
-                <ul className="mt-5 space-y-2">
-                  {sec.bullets.map((b, i) => (
-                    <li
-                      key={i}
-                      className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
-                    >
-                      <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Locked promise sits as a centered pause in the middle of the section */}
+                <div className="mt-6 flex flex-col items-center text-center gap-3 px-5 py-5 border-y border-accent/20 bg-accent/5">
+                  <Lock className="w-7 h-7 text-accent drop-shadow-[0_0_18px_hsl(var(--accent)/0.65)]" />
+                  <p className="font-body text-sm md:text-base text-foreground/85 leading-relaxed max-w-lg">
+                    {sec.bullets.join(' ')}
+                  </p>
+                </div>
 
                 {/* Fully hazy continuation beneath the bullets */}
                 <div
@@ -1238,15 +1232,21 @@ const ReportDossier = ({
 
       {/* STICKY MONETIZATION CTA */}
       {stage !== 'paid' && (
-        <div className="shrink-0">
+        <div className="shrink-0 px-3 pb-4 pt-2 bg-gradient-to-t from-background via-background/95 to-transparent">
           <div
-            className="border-t border-accent/40 px-4 py-3.5 md:px-6 md:py-4 text-center"
+            className="relative overflow-hidden rounded-[1.75rem] border border-accent/35 px-4 py-4 md:px-6 md:py-5 text-center shadow-2xl shadow-accent/25 backdrop-blur-2xl"
             style={{
-              background: '#0b0b0f',
+              background:
+                'linear-gradient(135deg, hsl(var(--card) / 0.96), hsl(var(--background) / 0.92))',
               boxShadow:
-                '0 -8px 40px -8px hsl(270 76% 53% / 0.45), inset 0 1px 0 hsl(270 95% 72% / 0.4)',
+                '0 -10px 50px -16px hsl(var(--accent) / 0.75), 0 18px 55px -28px hsl(var(--primary) / 0.65), inset 0 1px 0 hsl(var(--accent) / 0.35)',
             }}
           >
+            <div
+              aria-hidden
+              className="absolute inset-x-8 -top-16 h-24 rounded-full bg-gradient-to-r from-primary/30 via-accent/45 to-saffron/30 blur-3xl animate-pulse"
+            />
+            <div className="relative z-10">
             <h4 className="font-body text-[12px] md:text-sm text-bone/90 leading-snug max-w-xl mx-auto">
               Get Your Complete 4-Page Personalised blueprint on whatsapp to gain absolute
               clarity on your hidden blockages, exact transit dates, and remedies.
@@ -1260,8 +1260,9 @@ const ReportDossier = ({
               Unlock for ₹199
             </button>
             <p className="mt-2 font-body text-[11px] md:text-xs text-muted-foreground">
-              And claim your free five minute chat with Tara
+              And claim your free chat with Tara along with the report.
             </p>
+            </div>
           </div>
         </div>
       )}
