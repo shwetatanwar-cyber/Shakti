@@ -1069,6 +1069,8 @@ const ReportDossier = ({
 }) => {
   const category = classifyQuery(query);
   const sections = LOCKED_SECTIONS[category];
+  const displayName = capitalizeName(name);
+  const displayOverview = applyCapitalizedName(overview, name);
 
   return (
     <div
@@ -1082,7 +1084,7 @@ const ReportDossier = ({
             01 // YOUR READING
           </p>
           <div className="font-body text-sm md:text-base text-foreground/90 leading-relaxed whitespace-pre-wrap mt-2">
-            {overview}
+            {displayOverview}
           </div>
 
           {/* Trailing blurred continuation of Section 01 — looks like text fades away */}
@@ -1114,11 +1116,12 @@ const ReportDossier = ({
             const rotated = BLUR_LOREM
               .slice(idx % BLUR_LOREM.length)
               .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length));
-            // Two-line template above bullets — start soft, deepen toward hazy
-            // so it blends seamlessly into the fully hazy continuation below.
+            // First-line template stays legible but softly blurred, then deepens
+            // so it blends seamlessly into the hazy continuation below.
             const aboveSteps = [
-              { blur: 5, opacity: 0.55 },
-              { blur: 7, opacity: 0.45 },
+              { blur: 3, opacity: 0.72 },
+              { blur: 5, opacity: 0.56 },
+              { blur: 7, opacity: 0.44 },
             ];
             const belowParas = rotated.slice(2, 4);
             return (
@@ -1126,11 +1129,14 @@ const ReportDossier = ({
                 <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
                   {sec.num} // {sec.tag}
                 </p>
-                <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed mt-2">
-                  {sec.firstLine(name)}
+                <p
+                  className="font-body text-sm md:text-base text-bone leading-relaxed mt-2 pointer-events-none select-none"
+                  style={{ filter: `blur(${aboveSteps[0].blur}px)`, opacity: aboveSteps[0].opacity }}
+                >
+                  {sec.firstLine(displayName)}
                 </p>
 
-                {/* Gradient blurred preview directly under the first line */}
+                {/* Gradient blurred preview directly under the first-line template */}
                 <div
                   aria-hidden
                   className="mt-3 space-y-2 pointer-events-none select-none"
@@ -1140,8 +1146,8 @@ const ReportDossier = ({
                       key={i}
                       className="font-body text-sm md:text-base text-bone leading-relaxed"
                       style={{
-                        filter: `blur(${aboveSteps[i].blur}px)`,
-                        opacity: aboveSteps[i].opacity,
+                        filter: `blur(${aboveSteps[i + 1].blur}px)`,
+                        opacity: aboveSteps[i + 1].opacity,
                       }}
                     >
                       {c}
