@@ -1119,8 +1119,8 @@ const ReportDossier = ({
             // First-line template stays legible but softly blurred, then deepens
             // so it blends seamlessly into the hazy continuation below.
             const aboveSteps = [
-              { blur: 3, opacity: 0.72 },
-              { blur: 5, opacity: 0.56 },
+              { blur: 1.5, opacity: 0.82 },
+              { blur: 4, opacity: 0.6 },
               { blur: 7, opacity: 0.44 },
             ];
             const belowParas = rotated.slice(2, 4);
