@@ -1016,4 +1016,168 @@ const Paywall = ({
   );
 };
 
+const ReportDossier = ({
+  overview,
+  query,
+  stage,
+  onUnlock,
+  onReset,
+}: {
+  overview: string;
+  query: string;
+  stage: Stage;
+  onUnlock: () => void;
+  onReset: () => void;
+}) => {
+  const category = classifyQuery(query);
+  const sections = LOCKED_SECTIONS[category];
+
+  return (
+    <div className="relative animate-in fade-in duration-700 max-h-[85vh] overflow-y-auto pr-2">
+      <div className="space-y-6 pb-32">
+        <div className="text-center">
+          <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+            Your Reading
+          </p>
+          <h3 className="font-display text-2xl md:text-3xl font-light italic mt-2">
+            A message from Tara.
+          </h3>
+        </div>
+
+        {/* FREE READING — visible ~35% with mid-thought blur fade */}
+        <div className="glass-tile p-6 md:p-10 relative overflow-hidden">
+          <div className="font-body text-base md:text-lg text-foreground/90 leading-loose whitespace-pre-wrap">
+            {overview}
+          </div>
+          {/* Soft progressive blur over last lines */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-32"
+            style={{ backdropFilter: 'blur(2px)', WebkitBackdropFilter: 'blur(2px)' }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-20"
+            style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0b0b0f] via-[#0b0b0f]/80 to-transparent"
+          />
+        </div>
+
+        {/* PREMIUM GATE — long blurred dossier with crisp unblurred headers */}
+        <div className="relative space-y-8">
+          {/* Block A — blurred lorem */}
+          <BlurredBlock chunks={BLUR_LOREM.slice(0, 4)} />
+
+          {sections.map((sec, idx) => (
+            <div key={sec.num} className="space-y-6">
+              <CrispHeader num={sec.num} tag={sec.tag} title={sec.title} bullets={sec.bullets} />
+              <BlurredBlock
+                chunks={BLUR_LOREM.slice((idx + 1) % BLUR_LOREM.length).concat(
+                  BLUR_LOREM.slice(0, (idx + 1) % BLUR_LOREM.length),
+                ).slice(0, 4 + idx)}
+              />
+            </div>
+          ))}
+        </div>
+
+        {stage === 'paid' && (
+          <div className="space-y-4">
+            <p className="text-center font-body text-xs tracking-[0.3em] uppercase text-accent animate-pulse">
+              ✦ Dialogue Unlocked · The Shadow is listening
+            </p>
+            <button
+              onClick={onReset}
+              className="mx-auto block font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Begin New Session
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* STICKY MONETIZATION CTA */}
+      {stage !== 'paid' && (
+        <div className="sticky bottom-0 left-0 right-0 -mx-2 z-30">
+          <div
+            className="border-t border-accent/40 px-5 py-4 md:px-7 md:py-5 flex flex-col md:flex-row md:items-center gap-3 md:gap-5"
+            style={{
+              background: '#0b0b0f',
+              boxShadow: '0 -8px 40px -8px hsl(270 76% 53% / 0.45), inset 0 1px 0 hsl(270 95% 72% / 0.4)',
+            }}
+          >
+            <div className="flex-1 min-w-0">
+              <h4 className="font-display text-base md:text-lg font-light text-bone leading-snug">
+                Unlock Your Complete 4-Page Personal Evolution Blueprint
+              </h4>
+              <p className="font-body text-[11px] md:text-xs text-muted-foreground mt-1 leading-relaxed">
+                Gain absolute clarity on your hidden blockages, exact transit dates, and remedies.
+              </p>
+            </div>
+            <button
+              onClick={onUnlock}
+              className="shrink-0 font-body text-[11px] md:text-xs tracking-[0.25em] uppercase px-6 py-3.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+              style={{ animation: 'pulse-glow 2.2s ease-in-out infinite' }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Instant UPI Unlock · ₹199
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CrispHeader = ({
+  num,
+  tag,
+  title,
+  bullets,
+}: {
+  num: string;
+  tag: string;
+  title: string;
+  bullets: string[];
+}) => (
+  <div className="relative z-10 glass-tile p-6 md:p-7 border-accent/30">
+    <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+      {num} // {tag}
+    </p>
+    <h4 className="font-display text-xl md:text-2xl font-light italic mt-2 text-bone leading-snug">
+      {title}
+    </h4>
+    <ul className="mt-4 space-y-2.5">
+      {bullets.map((b, i) => (
+        <li
+          key={i}
+          className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
+        >
+          <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
+          <span>{b}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+const BlurredBlock = ({ chunks }: { chunks: string[] }) => (
+  <div
+    aria-hidden
+    className="space-y-3 select-none pointer-events-none"
+    style={{ filter: 'blur(14px)', opacity: 0.3 }}
+  >
+    {chunks.map((c, i) => (
+      <p
+        key={i}
+        className="font-body text-sm text-foreground/80 leading-relaxed"
+      >
+        {c}
+      </p>
+    ))}
+  </div>
+);
+
 export default OracleFunnel;
