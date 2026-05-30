@@ -1067,10 +1067,10 @@ const ReportDossier = ({
           {/* Trailing blurred continuation of Section 01 — looks like text fades away */}
           <div
             aria-hidden
-            className="mt-3 space-y-2 blur-md opacity-20 pointer-events-none select-none"
+            className="mt-3 space-y-2 blur-md opacity-60 pointer-events-none select-none"
           >
             {BLUR_LOREM.slice(0, 3).map((c, i) => (
-              <p key={i} className="font-body text-sm md:text-base leading-relaxed text-foreground/80">
+              <p key={i} className="font-body text-sm md:text-base leading-relaxed text-bone">
                 {c}
               </p>
             ))}
@@ -1099,7 +1099,7 @@ const ReportDossier = ({
               <div
                 aria-hidden
                 className="mt-3 space-y-2 select-none"
-                style={{ filter: 'blur(12px)', opacity: 0.22, pointerEvents: 'none' }}
+                style={{ filter: 'blur(8px)', opacity: 0.65, pointerEvents: 'none' }}
               >
                 {BLUR_LOREM
                   .slice(idx % BLUR_LOREM.length)
@@ -1108,7 +1108,7 @@ const ReportDossier = ({
                   .map((c, i) => (
                     <p
                       key={i}
-                      className="font-body text-sm md:text-base text-foreground/80 leading-relaxed"
+                      className="font-body text-sm md:text-base text-bone leading-relaxed"
                     >
                       {c}
                     </p>
