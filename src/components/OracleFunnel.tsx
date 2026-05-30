@@ -1098,7 +1098,12 @@ const ReportDossier = ({
   const category = classifyQuery(query);
   const sections = LOCKED_SECTIONS[category];
   const displayName = capitalizeName(name);
-  const displayOverview = applyCapitalizedName(overview, name);
+  const sanitizedOverview = (overview || '')
+    .replace(/\[\s*message\s+blurred\s*\]/gi, '')
+    .replace(/\[\s*blurred\s*\]/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  const displayOverview = applyCapitalizedName(sanitizedOverview, name);
 
   return (
     <div
