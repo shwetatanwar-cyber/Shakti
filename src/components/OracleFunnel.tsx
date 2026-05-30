@@ -646,7 +646,7 @@ const OracleFunnel = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: 'rgba(10, 10, 10, 0.92)', backdropFilter: 'blur(40px)' }}
+      style={{ background: '#0b0b0f' }}
     >
       <button
         onClick={close}
@@ -655,7 +655,13 @@ const OracleFunnel = ({
         Close
       </button>
 
-      <div className="w-full max-w-2xl">
+      <div
+        className={`w-full ${
+          stage === 'report' || stage === 'paywall' || stage === 'paid'
+            ? 'max-w-3xl h-full md:h-auto md:max-h-[92vh] flex flex-col'
+            : 'max-w-2xl'
+        }`}
+      >
         {/* BIRTH */}
         {stage === 'birth' && (
           <div className="glass-tile p-8 md:p-10 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
