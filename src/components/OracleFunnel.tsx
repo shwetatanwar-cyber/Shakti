@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Lock, Sparkles } from 'lucide-react';
 import { trackGAEvent, trackMetaEvent } from '@/utils/analytics';
@@ -26,15 +26,38 @@ interface Props {
   ctaPosition?: string;
 }
 
-const CALC_STEPS = [
-  'Locating ephemeris coordinates…',
-  'Compiling planetary stack · 9 grahas',
-  'Mapping 12 bhavas against birth ascendant…',
-  'Resolving nakshatra DNA · 27 segments',
-  'Reading current Mahadasha runtime…',
-  'Cross-referencing friction signatures…',
-  'Compiling Prakriti configuration…',
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ];
+
+const buildCalcSteps = (b: {
+  name?: string;
+  date?: string;
+  location?: string;
+}): string[] => {
+  const first = (b.name || '').trim().split(/\s+/)[0];
+  const firstCap = first
+    ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase()
+    : 'friend';
+  const city = (b.location || '').split(',')[0].trim() || 'your birth city';
+  let monthYear = '';
+  if (b.date) {
+    const [y, m] = b.date.split('-').map(Number);
+    if (y && m) monthYear = `${MONTH_NAMES[m - 1]} ${y}`;
+  }
+  return [
+    `Reading location coordinates for ${city}…`,
+    monthYear
+      ? `Mapping planetary positions for ${monthYear}…`
+      : 'Mapping planetary positions across your birth sky…',
+    `Resolving ${firstCap}'s nakshatra DNA · 27 segments…`,
+    'Analyzing active Mahadasha cycles…',
+    `Cross-referencing ${firstCap}'s bhava friction signatures…`,
+    `Almost done reading ${firstCap}'s charts…`,
+    'Tara is now generating your personalized diagnostic report…',
+  ];
+};
 
 type QueryCategory = 'RELATIONSHIP' | 'CAREER' | 'GENERAL_PEACE';
 
@@ -240,15 +263,20 @@ const OracleFunnel = ({
   const [calcIdx, setCalcIdx] = useState(0);
   const [consultationId, setConsultationId] = useState<string | null>(null);
 
+  const calcSteps = useMemo(
+    () => buildCalcSteps({ name: birth.name, date: birth.date, location: birth.location }),
+    [birth.name, birth.date, birth.location],
+  );
+
   // Rotate calculation steps while generating
   useEffect(() => {
     if (stage !== 'generating') return;
     setCalcIdx(0);
     const id = setInterval(() => {
-      setCalcIdx((i) => (i + 1) % CALC_STEPS.length);
+      setCalcIdx((i) => (i + 1) % calcSteps.length);
     }, 1400);
     return () => clearInterval(id);
-  }, [stage]);
+  }, [stage, calcSteps.length]);
 
   const close = () => setStage('closed');
   const resetAll = () => {
@@ -871,7 +899,7 @@ const OracleFunnel = ({
                 key={calcIdx}
                 className="font-display italic text-base md:text-lg text-muted-foreground animate-in fade-in duration-500"
               >
-                {CALC_STEPS[calcIdx]}
+                {calcSteps[calcIdx]}
               </p>
             </div>
 
@@ -1070,7 +1098,12 @@ const ReportDossier = ({
   const category = classifyQuery(query);
   const sections = LOCKED_SECTIONS[category];
   const displayName = capitalizeName(name);
-  const displayOverview = applyCapitalizedName(overview, name);
+  const sanitizedOverview = (overview || '')
+    .replace(/\[\s*message\s+blurred\s*\]/gi, '')
+    .replace(/\[\s*blurred\s*\]/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  const displayOverview = applyCapitalizedName(sanitizedOverview, name);
 
   return (
     <div
