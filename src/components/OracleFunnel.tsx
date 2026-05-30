@@ -73,7 +73,7 @@ const LOCKED_SECTIONS: Record<
       num: '02',
       tag: 'THE TIMELINE',
       firstLine: (n) =>
-        `${n}, I see a major shift from your current planetary alignment in the next…`,
+        `${n}, I see a major shift from your current planetary alignment in the next`,
       bullets: [
         'The exact dates when the fights, distance, or silence between you two will stop.',
         'The true reasons or outside energies causing misunderstandings or secrets right now.',
@@ -83,7 +83,7 @@ const LOCKED_SECTIONS: Record<
       num: '03',
       tag: 'THE PATTERN',
       firstLine: (n) =>
-        `${n}, your chart reveals a repetitive emotional cycle that was triggered during…`,
+        `${n}, your chart reveals a repetitive emotional cycle that was triggered during`,
       bullets: [
         'Why you get hurt so easily and keep overthinking every little detail about your partner.',
         'The hidden habits or actions you need to change today to save your bond from cracking.',
@@ -93,7 +93,7 @@ const LOCKED_SECTIONS: Record<
       num: '04',
       tag: 'THE RESOLUTION',
       firstLine: (n) =>
-        `${n}, to shift this heavy energy, there is a specific, simple daily action that…`,
+        `${n}, to shift this heavy energy, there is a specific, simple daily action that`,
       bullets: [
         'An easy daily routine to bring back trust, peace, and deep attraction between you two.',
         'Exactly what to say or do next to remove negative thoughts and feel safe again.',
@@ -105,7 +105,7 @@ const LOCKED_SECTIONS: Record<
       num: '02',
       tag: 'THE TIMELINE',
       firstLine: (n) =>
-        `${n}, I have good news. A major, heavy Mahadasha phase is ending for you in the next…`,
+        `${n}, I have good news. A major, heavy Mahadasha phase is ending for you in the next`,
       bullets: [
         'The exact dates for your next big job change, promotion, or salary hike.',
         'Dangerous months ahead where you must protect your money and avoid risky steps.',
@@ -115,7 +115,7 @@ const LOCKED_SECTIONS: Record<
       num: '03',
       tag: 'THE BLOCK',
       firstLine: (n) =>
-        `${n}, your 10th house shows a very specific professional block that explains why…`,
+        `${n}, your 10th house shows a very specific professional block that explains why`,
       bullets: [
         'Why your hard work is not being noticed by your bosses or managers.',
         'An unconscious mental block that is stopping you from reaching your true power.',
@@ -125,7 +125,7 @@ const LOCKED_SECTIONS: Record<
       num: '04',
       tag: 'THE RESOLUTION',
       firstLine: (n) =>
-        `${n}, to unlock your financial flow, your chart alignment requires a clean morning…`,
+        `${n}, to unlock your financial flow, your chart alignment requires a clean morning`,
       bullets: [
         'An easy morning ritual tailored to your birth chart to attract money and luck.',
         'Clear, step-by-step guidance on how to fix your confusion and pick the right path.',
@@ -137,7 +137,7 @@ const LOCKED_SECTIONS: Record<
       num: '02',
       tag: 'THE TIMELINE',
       firstLine: (n) =>
-        `Looking at your chart, ${n}, the heavy mental fog you are carrying is preparing to…`,
+        `Looking at your chart, ${n}, the heavy mental fog you are carrying is preparing to`,
       bullets: [
         'The exact dates when your heavy stress, sadness, and anxiety will finally end.',
         'Beautiful, positive cycles ahead for your health, peace of mind, and happiness.',
@@ -147,7 +147,7 @@ const LOCKED_SECTIONS: Record<
       num: '03',
       tag: 'THE ROOT',
       firstLine: (n) =>
-        `${n}, your moon placement indicates a deeply rooted pattern from your past that…`,
+        `${n}, your moon placement indicates a deeply rooted pattern from your past that`,
       bullets: [
         'The exact placement in your chart that causes your mind to constantly fear the worst.',
         'A deep pattern from your past that is secretly draining your energy every single day.',
@@ -157,7 +157,7 @@ const LOCKED_SECTIONS: Record<
       num: '04',
       tag: 'THE RESOLUTION',
       firstLine: (n) =>
-        `${n}, your immediate path to peace requires shifting your energy hours during…`,
+        `${n}, your immediate path to peace requires shifting your energy hours during`,
       bullets: [
         'A short 5-minute daily breathing or mindfulness exercise unique to your birth stars.',
         'How to alter your daily sleep and morning hours to clear your confusion instantly.',
@@ -1102,11 +1102,11 @@ const ReportDossier = ({
             const rotated = BLUR_LOREM
               .slice(idx % BLUR_LOREM.length)
               .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length));
-            // Two-line template above bullets with gradient fade (sharp → soft),
-            // then bullets in the middle, then fully hazy continuation below.
+            // Two-line template above bullets — start soft, deepen toward hazy
+            // so it blends seamlessly into the fully hazy continuation below.
             const aboveSteps = [
-              { blur: 2, opacity: 0.78 },
-              { blur: 6, opacity: 0.5 },
+              { blur: 5, opacity: 0.55 },
+              { blur: 7, opacity: 0.45 },
             ];
             const belowParas = rotated.slice(2, 4);
             return (
