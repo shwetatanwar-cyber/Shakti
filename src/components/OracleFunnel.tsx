@@ -55,6 +55,15 @@ const classifyQuery = (q: string): QueryCategory => {
   return 'GENERAL_PEACE';
 };
 
+const capitalizeName = (raw: string) => {
+  const s = (raw || '').trim();
+  if (!s) return 'friend';
+  return s
+    .split(/\s+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+};
+
 const LOCKED_SECTIONS: Record<
   QueryCategory,
   { num: string; tag: string; firstLine: (name: string) => string; bullets: string[] }[]
@@ -866,7 +875,7 @@ const OracleFunnel = ({
           <ReportDossier
             overview={overview}
             query={focus}
-            name={birth.name?.trim() || 'friend'}
+            name={capitalizeName(birth.name || '')}
             stage={stage}
             onUnlock={() => {
               trackGAEvent('payment_initiate', {
@@ -1089,35 +1098,65 @@ const ReportDossier = ({
           </div>
 
           {/* SECTIONS 02 / 03 / 04 — headers + visible first line + locked bullets + blurred body */}
-          {sections.map((sec, idx) => (
-            <div key={sec.num} className="mt-4">
-              <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-                {sec.num} // {sec.tag}
-              </p>
-              <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed mt-2">
-                {sec.firstLine(name)}
-              </p>
-              <ul className="mt-3 space-y-2">
-                {sec.bullets.map((b, i) => (
-                  <li
-                    key={i}
-                    className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
-                  >
-                    <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <div
-                aria-hidden
-                className="mt-3 space-y-2 select-none"
-                style={{ filter: 'blur(8px)', opacity: 0.65, pointerEvents: 'none' }}
-              >
-                {BLUR_LOREM
-                  .slice(idx % BLUR_LOREM.length)
-                  .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length))
-                  .slice(0, 2 + (idx % 2))
-                  .map((c, i) => (
+          {sections.map((sec, idx) => {
+            const rotated = BLUR_LOREM
+              .slice(idx % BLUR_LOREM.length)
+              .concat(BLUR_LOREM.slice(0, idx % BLUR_LOREM.length));
+            // Two-line template above bullets with gradient fade (sharp → soft),
+            // then bullets in the middle, then fully hazy continuation below.
+            const aboveSteps = [
+              { blur: 2, opacity: 0.78 },
+              { blur: 6, opacity: 0.5 },
+            ];
+            const belowParas = rotated.slice(2, 4);
+            return (
+              <div key={sec.num} className="mt-4">
+                <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
+                  {sec.num} // {sec.tag}
+                </p>
+                <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed mt-2">
+                  {sec.firstLine(name)}
+                </p>
+
+                {/* Gradient blurred preview directly under the first line */}
+                <div
+                  aria-hidden
+                  className="mt-3 space-y-2 pointer-events-none select-none"
+                >
+                  {rotated.slice(0, 2).map((c, i) => (
+                    <p
+                      key={i}
+                      className="font-body text-sm md:text-base text-bone leading-relaxed"
+                      style={{
+                        filter: `blur(${aboveSteps[i].blur}px)`,
+                        opacity: aboveSteps[i].opacity,
+                      }}
+                    >
+                      {c}
+                    </p>
+                  ))}
+                </div>
+
+                {/* Bullets sit in the middle of the section */}
+                <ul className="mt-5 space-y-2">
+                  {sec.bullets.map((b, i) => (
+                    <li
+                      key={i}
+                      className="font-body text-sm text-foreground/80 flex items-start gap-2 leading-relaxed"
+                    >
+                      <Lock className="w-3.5 h-3.5 mt-1 text-accent shrink-0" />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Fully hazy continuation beneath the bullets */}
+                <div
+                  aria-hidden
+                  className="mt-5 space-y-2 select-none"
+                  style={{ filter: 'blur(10px)', opacity: 0.4, pointerEvents: 'none' }}
+                >
+                  {belowParas.map((c, i) => (
                     <p
                       key={i}
                       className="font-body text-sm md:text-base text-bone leading-relaxed"
@@ -1125,9 +1164,10 @@ const ReportDossier = ({
                       {c}
                     </p>
                   ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {stage === 'paid' && (
             <div className="space-y-3 pt-6">
