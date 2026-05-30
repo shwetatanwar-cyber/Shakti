@@ -64,6 +64,18 @@ const capitalizeName = (raw: string) => {
     .join(' ');
 };
 
+const applyCapitalizedName = (text: string, rawName: string) => {
+  const formatted = capitalizeName(rawName);
+  const rawParts = (rawName || '').trim().split(/\s+/).filter(Boolean);
+  if (!text || !rawParts.length || formatted === 'friend') return text;
+
+  const escapedPattern = rawParts
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('\\s+');
+
+  return text.replace(new RegExp(`\\b${escapedPattern}\\b`, 'gi'), formatted);
+};
+
 const LOCKED_SECTIONS: Record<
   QueryCategory,
   { num: string; tag: string; firstLine: (name: string) => string; bullets: string[] }[]
