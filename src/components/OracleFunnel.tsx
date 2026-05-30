@@ -597,7 +597,7 @@ const OracleFunnel = ({
                 });
                 trackMetaEvent('AddToCart');
                 try {
-                  localStorage.setItem('oracle_user_name', birth.name.trim());
+                  localStorage.setItem('oracle_user_name', capitalizeName(birth.name));
                 } catch {
                   /* ignore */
                 }
@@ -769,7 +769,7 @@ const OracleFunnel = ({
                 });
                 trackMetaEvent('AddToCart');
                 try {
-                  localStorage.setItem('oracle_user_name', birth.name.trim());
+                  localStorage.setItem('oracle_user_name', capitalizeName(birth.name));
                 } catch {
                   /* ignore */
                 }
