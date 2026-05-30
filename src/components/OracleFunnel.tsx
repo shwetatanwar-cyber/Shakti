@@ -36,6 +36,128 @@ const CALC_STEPS = [
   'Compiling Prakriti configuration…',
 ];
 
+type QueryCategory = 'RELATIONSHIP' | 'CAREER' | 'GENERAL_PEACE';
+
+const RELATIONSHIP_KEYWORDS = [
+  'love', 'partner', 'marriage', 'third person', 'cheat', 'husband',
+  'wife', 'boyfriend', 'girlfriend', 'break', 'split',
+];
+const CAREER_KEYWORDS = [
+  'job', 'career', 'money', 'boss', 'promotion', 'salary', 'business',
+  'wealth', 'success',
+];
+
+const classifyQuery = (q: string): QueryCategory => {
+  const text = (q || '').toLowerCase();
+  if (!text.trim()) return 'GENERAL_PEACE';
+  if (RELATIONSHIP_KEYWORDS.some((k) => text.includes(k))) return 'RELATIONSHIP';
+  if (CAREER_KEYWORDS.some((k) => text.includes(k))) return 'CAREER';
+  return 'GENERAL_PEACE';
+};
+
+const LOCKED_SECTIONS: Record<
+  QueryCategory,
+  { num: string; tag: string; title: string; bullets: string[] }[]
+> = {
+  RELATIONSHIP: [
+    {
+      num: '03',
+      tag: 'THE TIMELINE',
+      title: 'The Next 12 Months: When will your love life become clear?',
+      bullets: [
+        'The exact dates when the fights, distance, or silence between you two will stop.',
+        'The true reasons or outside energies causing misunderstandings or secrets right now.',
+      ],
+    },
+    {
+      num: '04',
+      tag: 'THE PATTERN',
+      title: 'The Inner Patterns Holding Your Relationship Back',
+      bullets: [
+        'Why you get hurt so easily and keep overthinking every little detail about your partner.',
+        'The hidden habits or actions you need to change today to save your bond from cracking.',
+      ],
+    },
+    {
+      num: '05',
+      tag: 'THE RESOLUTION',
+      title: 'Simple Actions to Fix Your Connection',
+      bullets: [
+        'An easy daily routine to bring back trust, peace, and deep attraction between you two.',
+        'Exactly what to say or do next to remove negative thoughts and feel safe again.',
+      ],
+    },
+  ],
+  CAREER: [
+    {
+      num: '03',
+      tag: 'THE TIMELINE',
+      title: 'The Next 12 Months: When will your career and money grow?',
+      bullets: [
+        'The exact dates for your next big job change, promotion, or salary hike.',
+        'Dangerous months ahead where you must protect your money and avoid risky steps.',
+      ],
+    },
+    {
+      num: '04',
+      tag: 'THE BLOCK',
+      title: 'The Hidden Reason You Are Feeling Stuck',
+      bullets: [
+        'Why your hard work is not being noticed by your bosses or managers.',
+        'An unconscious mental block that is stopping you from reaching your true power.',
+      ],
+    },
+    {
+      num: '05',
+      tag: 'THE RESOLUTION',
+      title: 'Simple Steps to Unlock Success',
+      bullets: [
+        'An easy morning ritual tailored to your birth chart to attract money and luck.',
+        'Clear, step-by-step guidance on how to fix your confusion and pick the right path.',
+      ],
+    },
+  ],
+  GENERAL_PEACE: [
+    {
+      num: '03',
+      tag: 'THE TIMELINE',
+      title: 'The Next 12 Months: When will your life become easy?',
+      bullets: [
+        'The exact dates when your heavy stress, sadness, and anxiety will finally end.',
+        'Beautiful, positive cycles ahead for your health, peace of mind, and happiness.',
+      ],
+    },
+    {
+      num: '04',
+      tag: 'THE ROOT',
+      title: 'The Real Root of Your Overthinking',
+      bullets: [
+        'The exact placement in your chart that causes your mind to constantly fear the worst.',
+        'A deep pattern from your past that is secretly draining your energy every single day.',
+      ],
+    },
+    {
+      num: '05',
+      tag: 'THE RESOLUTION',
+      title: 'Simple Remedies for Lasting Peace',
+      bullets: [
+        'A short 5-minute daily breathing or mindfulness exercise unique to your birth stars.',
+        'How to alter your daily sleep and morning hours to clear your confusion instantly.',
+      ],
+    },
+  ],
+};
+
+const BLUR_LOREM = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  'Saturn 24°12′ · Jupiter retrograde · Moon Rohini · Lagna lord placement triggers a subtle dasha pivot across the 7th bhava axis with mild friction in the 11th house gains line.',
+  'Vimshottari progression: Rahu mahadasha → Jupiter antardasha · 11 months · followed by Saturn pratyantar across the natal Mars in 4th house. Outer transit Saturn squares natal Venus during Feb–Apr window.',
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada. Nullam ac erat ante. Vivamus lacinia odio vitae vestibulum.',
+  'Ashtakavarga score: 28 · Bhinnashtakavarga of Jupiter in 5H is strong · Sade Sati phase enters its final pada with relief markers between the 14th and 22nd lunar nights.',
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec id elit non mi porta gravida at eget metus.',
+];
+
 const OracleFunnel = ({
   variant = 'orb',
   ctaText = 'Get My Free Reading',
