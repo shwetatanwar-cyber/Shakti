@@ -875,7 +875,7 @@ const OracleFunnel = ({
           <ReportDossier
             overview={overview}
             query={focus}
-            name={birth.name?.trim() || 'friend'}
+            name={capitalizeName(birth.name || '')}
             stage={stage}
             onUnlock={() => {
               trackGAEvent('payment_initiate', {
