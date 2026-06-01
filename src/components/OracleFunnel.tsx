@@ -457,7 +457,7 @@ const OracleFunnel = ({
               <div className="text-center mt-12 mb-12">
                 <label
                   htmlFor="oracle-inline-query"
-                  className="block font-display italic text-lg md:text-xl text-foreground/90 leading-snug tracking-tight"
+                  className="block font-display italic text-[22px] md:text-2xl text-foreground/90 leading-snug tracking-tight"
                 >
                   What is weighing on your heart right now?
                 </label>
@@ -492,13 +492,13 @@ const OracleFunnel = ({
             ) : (
             <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
-              <p className="font-display italic text-lg md:text-xl text-muted-foreground/80 text-left">
+              <p className="font-display italic text-[22px] md:text-2xl text-muted-foreground/80 text-left leading-snug tracking-tight">
                 And just a few birth details
               </p>
               <button
                 type="button"
                 onClick={() => setInlineStep('query')}
-                className="font-body text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-accent transition-colors"
+                className="font-body text-[13px] tracking-[0.2em] uppercase text-muted-foreground hover:text-accent transition-colors"
               >
                 Back →
               </button>
