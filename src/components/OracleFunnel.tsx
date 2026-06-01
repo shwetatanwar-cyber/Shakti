@@ -457,7 +457,7 @@ const OracleFunnel = ({
               <div className="text-center mt-12 mb-12">
                 <label
                   htmlFor="oracle-inline-query"
-                  className="block font-body text-lg md:text-xl font-normal text-foreground/90 leading-snug tracking-tight"
+                  className="block font-display italic text-base md:text-lg text-foreground/90 leading-snug tracking-tight"
                 >
                   What is weighing on your heart right now?
                 </label>
@@ -466,8 +466,8 @@ const OracleFunnel = ({
                   rows={4}
                   value={focus}
                   onChange={(e) => setFocus(e.target.value)}
-                  placeholder="Type your worry naturally here... (e.g., I feel like my partner is hiding something from me, or I am not sure if I am dating the right person)"
-                  className="mt-8 w-full bg-transparent border-0 outline-none shadow-none rounded-none px-1 py-3 font-body text-base md:text-[17px] text-foreground placeholder:text-white/40 placeholder:italic text-center focus:outline-none focus:ring-0 resize-none"
+                  placeholder="Type your worry naturally... (e.g., I feel like my partner is hiding something, or I feel stuck)"
+                  className="mt-8 w-full bg-transparent border-0 outline-none shadow-none rounded-none px-1 py-3 font-body text-base md:text-[17px] text-foreground placeholder:text-white/30 text-center focus:outline-none focus:ring-0 resize-none"
                 />
                 <div className="mt-10 space-y-5">
                 <button
@@ -492,7 +492,7 @@ const OracleFunnel = ({
             ) : (
             <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
-              <p className="font-display italic text-base text-muted-foreground/80 text-left">
+              <p className="font-display italic text-base md:text-lg text-muted-foreground/80 text-left">
                 And just a few birth details
               </p>
               <button
