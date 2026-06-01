@@ -18,7 +18,7 @@ const Landing = () => {
               Vedic-Tech · The Cosmic Blueprint
             </p>
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
-              Decode your love dynamics with <span className="italic">Tara</span>
+              Decode your love life with <span className="italic">Tara</span>
             </h1>
             <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
               Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
