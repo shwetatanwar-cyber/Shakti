@@ -98,7 +98,7 @@ const Landing = () => {
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
               Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Just enter your
-              birth details and watch Tara unlock your future.
+              birth details and watch Tara unlock your the best version of your relationship.
             </p>
           </div>
 
