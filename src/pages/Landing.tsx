@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import ShaktiBackground from '@/components/ShaktiBackground';
-import OracleFunnel from '@/components/OracleFunnel';
-import CosmicWheel from '@/components/CosmicWheel';
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import ShaktiBackground from "@/components/ShaktiBackground";
+import OracleFunnel from "@/components/OracleFunnel";
+import CosmicWheel from "@/components/CosmicWheel";
 
 const Landing = () => {
   const [bottomFormOpen, setBottomFormOpen] = useState(false);
@@ -21,7 +21,8 @@ const Landing = () => {
               Decode your love dynamics with <span className="italic">Tara</span>
             </h1>
             <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
-              Most relationship crises aren't personal failures; they are hidden planetary shifts running in the background. Stop running blind to the ultimate cosmic math.
+              Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
+              background. Stop running blind to the ultimate cosmic math.
             </p>
 
             <div className="pt-2 md:hidden">
@@ -29,7 +30,8 @@ const Landing = () => {
             </div>
 
             <p className="font-body text-sm md:text-base text-foreground/90 italic leading-relaxed max-w-lg pt-2">
-              Enter your details below to instantly unlock a 100% private diagnostic of your current relationship dynamics.
+              Enter your details below to instantly unlock a 100% private diagnostic of your current relationship
+              dynamics.
             </p>
 
             <div className="pt-2">
@@ -50,22 +52,33 @@ const Landing = () => {
         {/* BLOCK 2: LOGIC LAYER */}
         <section className="space-y-10 md:space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-4">
-            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-              The Logic Layer
-            </p>
+            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">The Logic Layer</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
-              Math behind the blueprint.
+              How Tara decodes the cosmic math
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
-              Your birth moment captured 9 cosmic bodies across 12 life areas at one exact timestamp. This creates a highly specific 27-point personality map that reveals your mental and emotional wiring.
+              Your birth moment captured 9 cosmic bodies across 12 life areas at one exact timestamp. This creates a
+              highly specific 27-point personality map that reveals your mental and emotional wiring.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { sym: '01', title: 'Raw Inputs', body: 'Date · Time · City · Coordinates. Four fixed data points cross-referenced with real-time astronomical positions.' },
-              { sym: '02', title: 'The Calculation', body: '9 planets × 12 life zones × 27 traits. No guesswork, no generic horoscopes — pure mathematical probability.' },
-              { sym: '03', title: 'Mahadashas', body: 'Planetary shifts activate different parts of your energy over time. Your "current vibe" or sudden anxiety is just a phase requiring specific handling.' },
+              {
+                sym: "01",
+                title: "Raw Inputs",
+                body: "Date · Time · City · Coordinates. Four fixed data points cross-referenced with real-time astronomical positions.",
+              },
+              {
+                sym: "02",
+                title: "The Calculation",
+                body: "9 planets × 12 life zones × 27 traits. No guesswork, no generic horoscopes — pure mathematical probability.",
+              },
+              {
+                sym: "03",
+                title: "Mahadashas",
+                body: 'Planetary shifts activate different parts of your energy over time. Your "current vibe" or sudden anxiety is just a phase requiring specific handling.',
+              },
             ].map((card) => (
               <div key={card.sym} className="glass-tile p-6 space-y-3">
                 <p className="font-display italic text-3xl text-accent">{card.sym}</p>
@@ -79,14 +92,13 @@ const Landing = () => {
         {/* BLOCK 3: FINAL CLOSE */}
         <section className="space-y-8 text-center">
           <div className="max-w-2xl mx-auto space-y-4">
-            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
-              Get Started
-            </p>
+            <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Get Started</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
               Download your cosmic user manual.
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
-              Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Enter your birth details and decode the program.
+              Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Enter your birth
+              details and decode the program.
             </p>
           </div>
 
