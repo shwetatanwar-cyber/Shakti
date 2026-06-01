@@ -124,7 +124,7 @@ const Landing = () => {
         </section>
       </main>
 
-      <footer className="relative z-0 px-4 md:px-8 py-12 mt-20 border-t border-border/30">
+      <footer className="relative z-0 px-4 md:px-8 py-12 mt-20">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
             © Digital Shadow · A living interface
