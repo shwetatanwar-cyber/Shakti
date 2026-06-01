@@ -22,7 +22,7 @@ const Landing = () => {
             </h1>
             <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
               Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
-              background. Stop running blind to the ultimate cosmic math.
+              background. Align your next move with the ultimate cosmic math.
             </p>
 
             <div className="pt-2 md:hidden">
