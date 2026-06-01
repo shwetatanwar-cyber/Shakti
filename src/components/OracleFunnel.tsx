@@ -454,7 +454,7 @@ const OracleFunnel = ({
         <div className="w-full max-w-md mx-auto">
           <div className="px-2 md:px-6 py-2">
             {inlineStep === 'query' ? (
-              <div className="text-center mt-12 mb-12">
+              <div className="text-left mt-12 mb-12">
                 <label
                   htmlFor="oracle-inline-query"
                   className="block font-display italic text-[22px] md:text-2xl text-foreground/90 leading-snug tracking-tight"
@@ -467,7 +467,7 @@ const OracleFunnel = ({
                   value={focus}
                   onChange={(e) => setFocus(e.target.value)}
                   placeholder="Type your worry naturally... (e.g., I feel like my partner is hiding something, or I feel stuck)"
-                  className="mt-8 w-full bg-transparent border-0 outline-none shadow-none rounded-none px-1 py-3 font-body text-base md:text-[17px] text-foreground placeholder:text-white/30 text-center focus:outline-none focus:ring-0 resize-none"
+                  className="mt-8 w-full bg-transparent border-0 outline-none shadow-none rounded-none px-1 py-3 font-body text-base md:text-[17px] text-foreground placeholder:text-white/30 text-left focus:outline-none focus:ring-0 resize-none"
                 />
                 <div className="mt-10 space-y-5">
                 <button
