@@ -452,12 +452,12 @@ const OracleFunnel = ({
       const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
-          <div className="px-2 md:px-6 py-2 space-y-6">
+          <div className="px-2 md:px-6 py-2">
             {inlineStep === 'query' ? (
-              <div className="space-y-7 text-center">
+              <div className="text-center mt-12 mb-12">
                 <label
                   htmlFor="oracle-inline-query"
-                  className="block font-display italic text-2xl md:text-3xl font-light text-foreground leading-snug"
+                  className="block font-body text-lg md:text-xl font-normal text-foreground/90 leading-snug tracking-tight"
                 >
                   What is weighing on your heart right now?
                 </label>
@@ -467,9 +467,9 @@ const OracleFunnel = ({
                   value={focus}
                   onChange={(e) => setFocus(e.target.value)}
                   placeholder="Type your worry naturally here... (e.g., I feel like my partner is hiding something from me, or I am not sure if I am dating the right person)"
-                  className="w-full bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 placeholder:italic text-center focus:outline-none focus:border-accent/60 transition-colors resize-none"
+                  className="mt-8 w-full bg-transparent border-0 outline-none shadow-none rounded-none px-1 py-3 font-body text-base md:text-[17px] text-foreground placeholder:text-white/40 placeholder:italic text-center focus:outline-none focus:ring-0 resize-none"
                 />
-                <div className="space-y-3">
+                <div className="mt-10 space-y-5">
                 <button
                   type="button"
                   disabled={!focus.trim()}
@@ -490,7 +490,7 @@ const OracleFunnel = ({
                 </div>
               </div>
             ) : (
-            <div className="space-y-6">
+            <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
               <button
                 type="button"
