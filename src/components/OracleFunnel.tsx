@@ -513,7 +513,7 @@ const OracleFunnel = ({
                   onChange={(e) => setBirth({ ...birth, name: e.target.value })}
                   maxLength={80}
                   required
-                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
@@ -544,7 +544,7 @@ const OracleFunnel = ({
                   type="date"
                   value={birth.date}
                   onChange={(e) => setBirth({ ...birth, date: e.target.value })}
-                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
@@ -553,7 +553,7 @@ const OracleFunnel = ({
                   type="time"
                   value={birth.time}
                   onChange={(e) => setBirth({ ...birth, time: e.target.value })}
-                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
@@ -573,7 +573,7 @@ const OracleFunnel = ({
                   }
                   placeholder="e.g. Mumbai, Maharashtra"
                   className="mt-1.5"
-                  inputClassName="w-full bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
+                  inputClassName="w-full bg-transparent border-0 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
             </div>
