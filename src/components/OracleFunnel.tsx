@@ -492,7 +492,7 @@ const OracleFunnel = ({
             ) : (
             <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
-              <p className="font-display italic text-base text-muted-foreground/80 text-left">
+              <p className="font-display italic text-base md:text-lg text-muted-foreground/80 text-left">
                 And just a few birth details
               </p>
               <button
