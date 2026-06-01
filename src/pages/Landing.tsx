@@ -17,7 +17,7 @@ const Landing = () => {
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
               Vedic-Tech · The Cosmic Blueprint
             </p>
-            <h1 className="font-display italic text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
+            <h1 className="font-display italic text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-tight tracking-tight">
               Decode your love life with Tara
             </h1>
 
