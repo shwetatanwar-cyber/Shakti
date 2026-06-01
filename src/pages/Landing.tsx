@@ -94,11 +94,11 @@ const Landing = () => {
           <div className="max-w-2xl mx-auto space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Get Started</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
-              Discover your inner self.
+              Discover your inner self
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
-              Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Enter your birth
-              details and decode the program.
+              Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Just enter your
+              birth details and watch Tara unlock your future.
             </p>
           </div>
 
