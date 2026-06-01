@@ -452,50 +452,24 @@ const OracleFunnel = ({
       const genderOpts = ['Female', 'Male', 'Other'];
       return (
         <div className="w-full max-w-md mx-auto">
-          <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
-            {/* Step indicator */}
-            <div className="flex items-center justify-between">
-              <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/80">
-                {inlineStep === 'query' ? 'Step 1 of 2 · Your Query' : 'Step 2 of 2 · Birth Coordinates'}
-              </p>
-              {inlineStep === 'birth' && (
-                <button
-                  type="button"
-                  onClick={() => setInlineStep('query')}
-                  className="font-body text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-accent transition-colors"
-                >
-                  ← Back
-                </button>
-              )}
-            </div>
-
+          <div className="px-2 md:px-6 py-2 space-y-6">
             {inlineStep === 'query' ? (
-              <div className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="oracle-inline-query"
-                    className="block font-display italic text-xl md:text-2xl font-light text-foreground leading-snug"
-                  >
-                    What is worrying you the most right now?
-                  </label>
-                  <p className="mt-2 font-body text-xs text-muted-foreground">
-                    The more specific you are, the better Tara will be able to answer your query.
-                  </p>
-                </div>
-                <div className="relative">
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-accent/30 via-primary/20 to-saffron/20 opacity-70 blur-md"
-                  />
-                  <textarea
-                    id="oracle-inline-query"
-                    rows={5}
-                    value={focus}
-                    onChange={(e) => setFocus(e.target.value)}
-                    placeholder="Share what is weighing on your heart — a relationship, a decision, a fear. This stays private."
-                    className="relative w-full bg-background/70 border border-accent/40 rounded-2xl p-4 font-body text-sm md:text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/90 focus:shadow-[0_0_30px_-6px_hsl(var(--accent)/0.55)] transition-all resize-none"
-                  />
-                </div>
+              <div className="space-y-7 text-center">
+                <label
+                  htmlFor="oracle-inline-query"
+                  className="block font-display italic text-2xl md:text-3xl font-light text-foreground leading-snug"
+                >
+                  What is weighing on your heart right now?
+                </label>
+                <textarea
+                  id="oracle-inline-query"
+                  rows={4}
+                  value={focus}
+                  onChange={(e) => setFocus(e.target.value)}
+                  placeholder="Type your worry naturally here... (e.g., I feel like my partner is hiding something from me, or I am not sure if I am dating the right person)"
+                  className="w-full bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 placeholder:italic text-center focus:outline-none focus:border-accent/60 transition-colors resize-none"
+                />
+                <div className="space-y-3">
                 <button
                   type="button"
                   disabled={!focus.trim()}
@@ -506,19 +480,33 @@ const OracleFunnel = ({
                     });
                     setInlineStep('birth');
                   }}
-                  className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
+                  className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-accent/20"
                 >
                   Continue →
                 </button>
-                <p className="text-center font-body text-[11px] text-muted-foreground/80">
-                  🔒 100% private. Read only by Tara's AI — never by humans.
+                <p className="text-center font-body text-[11px] text-muted-foreground/70 flex items-center justify-center gap-1.5">
+                  <Lock className="w-3 h-3" /> 100% private. Read only by Tara's AI — never by humans.
                 </p>
+                </div>
               </div>
             ) : (
-            <>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setInlineStep('query')}
+                className="font-body text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-accent transition-colors"
+              >
+                ← Back
+              </button>
+              <p className="font-display italic text-base text-muted-foreground/80">
+                A few birth details
+              </p>
+              <span className="w-10" />
+            </div>
+            <div className="grid grid-cols-1 gap-5">
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Name</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Your Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Arjun"
@@ -526,11 +514,11 @@ const OracleFunnel = ({
                   onChange={(e) => setBirth({ ...birth, name: e.target.value })}
                   maxLength={80}
                   required
-                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Gender</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Your Gender</label>
                 <div className="mt-1.5 grid grid-cols-3 gap-2">
                   {genderOpts.map((g) => {
                     const active = birth.gender === g;
@@ -539,10 +527,10 @@ const OracleFunnel = ({
                         key={g}
                         type="button"
                         onClick={() => setBirth({ ...birth, gender: g })}
-                        className={`px-3 py-2.5 rounded-lg font-body text-sm border transition-all ${
+                        className={`px-3 py-2.5 rounded-full font-body text-sm border transition-all ${
                           active
-                            ? 'border-accent bg-accent/20 text-foreground shadow-[0_0_18px_-6px_hsl(var(--accent)/0.7)]'
-                            : 'border-accent/30 bg-background/60 text-muted-foreground hover:border-accent/60 hover:text-foreground'
+                            ? 'border-accent/70 bg-accent/15 text-foreground'
+                            : 'border-border/40 bg-transparent text-muted-foreground hover:border-accent/50 hover:text-foreground'
                         }`}
                       >
                         {g}
@@ -552,25 +540,25 @@ const OracleFunnel = ({
                 </div>
               </div>
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Date of Birth</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Date of Birth</label>
                 <input
                   type="date"
                   value={birth.date}
                   onChange={(e) => setBirth({ ...birth, date: e.target.value })}
-                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Time of Birth</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">Time of Birth</label>
                 <input
                   type="time"
                   value={birth.time}
                   onChange={(e) => setBirth({ ...birth, time: e.target.value })}
-                  className="w-full mt-1.5 bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  className="w-full mt-1.5 bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
               <div>
-                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">City of Birth</label>
+                <label className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground/70">City of Birth</label>
                 <CityAutocomplete
                   value={birth.location}
                   onSelect={(c) =>
@@ -586,7 +574,7 @@ const OracleFunnel = ({
                   }
                   placeholder="e.g. Mumbai, Maharashtra"
                   className="mt-1.5"
-                  inputClassName="w-full bg-background/60 border border-accent/30 rounded-lg px-3 py-3 font-body text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/80 transition-colors"
+                  inputClassName="w-full bg-transparent border-0 border-b border-border/40 rounded-none px-1 py-2.5 font-body text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-accent/60 transition-colors"
                 />
               </div>
             </div>
@@ -696,14 +684,14 @@ const OracleFunnel = ({
                 }
                 generateReport(focus);
               }}
-              className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
+              className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-accent/20"
             >
               {ctaText} →
             </button>
-            <p className="text-center font-body text-xs text-muted-foreground">
-              {ctaSubtext}
+            <p className="text-center font-body text-xs text-muted-foreground/70 flex items-center justify-center gap-1.5">
+              <Lock className="w-3 h-3" /> {ctaSubtext}
             </p>
-            </>
+            </div>
             )}
           </div>
         </div>
