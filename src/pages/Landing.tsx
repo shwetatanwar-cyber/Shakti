@@ -94,7 +94,7 @@ const Landing = () => {
           <div className="max-w-2xl mx-auto space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Get Started</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
-              Download your cosmic user manual.
+              Discover your inner self.
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
               Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Enter your birth
@@ -113,7 +113,7 @@ const Landing = () => {
                   Initialize Private Chat →
                 </button>
                 <p className="text-center font-body text-xs text-muted-foreground">
-                  First 5 minutes are on us. Break-even on clarity instantly.
+                  First 5 minutes are on us. Break-even on clarity today.
                 </p>
               </div>
             ) : (
