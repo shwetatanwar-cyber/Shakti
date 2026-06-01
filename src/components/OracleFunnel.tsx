@@ -492,13 +492,13 @@ const OracleFunnel = ({
             ) : (
             <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
-              <p className="font-display italic text-[22px] md:text-2xl text-muted-foreground/80 text-left leading-snug tracking-tight">
+              <p className="font-display italic text-[22px] md:text-2xl text-foreground text-left leading-snug tracking-tight">
                 And just a few birth details
               </p>
               <button
                 type="button"
                 onClick={() => setInlineStep('query')}
-                className="font-body text-[13px] tracking-[0.2em] uppercase text-muted-foreground hover:text-accent transition-colors"
+                className="font-body text-[13px] tracking-[0.2em] uppercase text-foreground hover:text-accent transition-colors"
               >
                 Back →
               </button>

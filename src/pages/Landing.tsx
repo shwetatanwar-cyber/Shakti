@@ -47,7 +47,7 @@ const Landing = () => {
 
         {/* BLOCK 2: LOGIC LAYER */}
         <section className="space-y-10 md:space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-4">
+          <div className="max-w-2xl space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">The Logic Layer</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
               How Tara decodes the cosmic math
@@ -86,8 +86,8 @@ const Landing = () => {
         </section>
 
         {/* BLOCK 3: FINAL CLOSE */}
-        <section className="space-y-8 text-center">
-          <div className="max-w-2xl mx-auto space-y-4">
+        <section className="space-y-8">
+          <div className="max-w-2xl space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Get Started</p>
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
               Claim the love you deserve
@@ -100,7 +100,7 @@ const Landing = () => {
 
           <div className="pt-2">
             {!bottomFormOpen ? (
-              <div className="w-full max-w-md mx-auto space-y-3">
+              <div className="w-full max-w-md space-y-3">
                 <button
                   type="button"
                   onClick={() => setBottomFormOpen(true)}
@@ -108,7 +108,7 @@ const Landing = () => {
                 >
                   Initialize Private Chat →
                 </button>
-                <p className="text-center font-body text-xs text-muted-foreground">
+                <p className="font-body text-xs text-muted-foreground">
                   First 5 minutes are on us. Break-even on clarity today.
                 </p>
               </div>
