@@ -262,6 +262,8 @@ const OracleFunnel = ({
   const [error, setError] = useState('');
   const [calcIdx, setCalcIdx] = useState(0);
   const [consultationId, setConsultationId] = useState<string | null>(null);
+  // Inline funnel internal step: capture intent first, birth details second.
+  const [inlineStep, setInlineStep] = useState<'query' | 'birth'>('query');
 
   const calcSteps = useMemo(
     () => buildCalcSteps({ name: birth.name, date: birth.date, location: birth.location }),
