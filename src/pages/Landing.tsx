@@ -13,7 +13,7 @@ const Landing = () => {
       <main className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 space-y-24 md:space-y-32">
         {/* BLOCK 1: HERO */}
         <section className="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
-          <div className="space-y-5 md:space-y-6">
+          <div className="space-y-5 md:space-y-6 text-center md:text-left">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
               Vedic-Tech · The Cosmic Blueprint
             </p>
@@ -21,7 +21,7 @@ const Landing = () => {
               Decode your love life with <span className="italic">Tara</span>
             </h1>
 
-            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
+            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto md:mx-0">
               Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
               background. Align your next move with the ultimate cosmic math.
             </p>
@@ -49,7 +49,7 @@ const Landing = () => {
         <section className="space-y-10 md:space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">The Logic Layer</p>
-            <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light leading-[0.95] tracking-tight">
               How Tara decodes the cosmic math
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
@@ -89,7 +89,7 @@ const Landing = () => {
         <section className="space-y-8 text-center">
           <div className="max-w-2xl mx-auto space-y-4">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">Get Started</p>
-            <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light leading-[0.95] tracking-tight">
               Claim the love you deserve
             </h2>
             <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
