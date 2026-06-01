@@ -457,7 +457,7 @@ const OracleFunnel = ({
               <div className="text-center mt-12 mb-12">
                 <label
                   htmlFor="oracle-inline-query"
-                  className="block font-body text-base md:text-lg text-foreground/90 leading-relaxed"
+                  className="block font-display italic text-base md:text-lg text-foreground/90 leading-snug tracking-tight"
                 >
                   What is weighing on your heart right now?
                 </label>
@@ -492,7 +492,7 @@ const OracleFunnel = ({
             ) : (
             <div className="space-y-6 mt-8">
             <div className="flex items-center justify-between">
-              <p className="font-body text-base md:text-lg text-foreground/90 leading-relaxed text-left">
+              <p className="font-display italic text-base md:text-lg text-muted-foreground/80 text-left">
                 And just a few birth details
               </p>
               <button
