@@ -52,7 +52,7 @@ const Landing = () => {
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
               How Tara decodes the cosmic math
             </h2>
-            <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
+            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed">
               Your birth moment captured 9 cosmic bodies across 12 life areas at one exact timestamp. This creates a
               highly specific 27-point personality map that reveals your mental and emotional wiring.
             </p>
@@ -92,7 +92,7 @@ const Landing = () => {
             <h2 className="font-display text-4xl md:text-5xl font-light italic leading-tight">
               Claim the love you deserve
             </h2>
-            <p className="font-body text-sm md:text-base text-muted-foreground leading-relaxed">
+            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed">
               Stop guessing why you're stressed, stuck, or repeating the same relationship patterns. Just enter your
               birth details and watch Tara unlock your the best version of your relationship.
             </p>
