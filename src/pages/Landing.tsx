@@ -17,9 +17,10 @@ const Landing = () => {
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
               Vedic-Tech · The Cosmic Blueprint
             </p>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
-              Decode your love life with <span className="italic">Tara</span>
-            </h1>
+            <<h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
+  Decode your love life <span className="block">with <span className="italic">Tara</span></span>
+</h1>
+
             <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
               Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
               background. Align your next move with the ultimate cosmic math.
