@@ -13,14 +13,14 @@ const Landing = () => {
       <main className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 space-y-24 md:space-y-32">
         {/* BLOCK 1: HERO */}
         <section className="grid md:grid-cols-2 gap-10 md:gap-12 items-center">
-          <div className="space-y-5 md:space-y-6 text-center mx-auto max-w-xl">
+          <div className="space-y-5 md:space-y-6">
             <p className="font-body text-[10px] tracking-[0.4em] uppercase text-accent">
               Vedic-Tech · The Cosmic Blueprint
             </p>
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[0.95] tracking-tight">
               Decode your love life with <span className="italic">Tara</span>
             </h1>
-            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
+            <p className="font-body text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
               Most relationship crises aren't personal failures; they are hidden planetary shifts running in the
               background. Align your next move with the ultimate cosmic math.
             </p>
@@ -28,11 +28,6 @@ const Landing = () => {
             <div className="pt-2 md:hidden">
               <CosmicWheel />
             </div>
-
-            <p className="font-body text-sm md:text-base text-foreground/90 italic leading-relaxed max-w-lg mx-auto pt-2">
-              Enter your details below to instantly unlock a 100% private diagnostic of your current relationship
-              dynamics.
-            </p>
 
             <div className="pt-2">
               <OracleFunnel
