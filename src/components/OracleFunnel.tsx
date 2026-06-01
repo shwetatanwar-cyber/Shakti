@@ -453,6 +453,69 @@ const OracleFunnel = ({
       return (
         <div className="w-full max-w-md mx-auto">
           <div className="glass-tile p-5 md:p-6 space-y-4 border-accent/30 shadow-[0_0_40px_-12px_hsl(var(--violet)/0.5)]">
+            {/* Step indicator */}
+            <div className="flex items-center justify-between">
+              <p className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/80">
+                {inlineStep === 'query' ? 'Step 1 of 2 · Your Query' : 'Step 2 of 2 · Birth Coordinates'}
+              </p>
+              {inlineStep === 'birth' && (
+                <button
+                  type="button"
+                  onClick={() => setInlineStep('query')}
+                  className="font-body text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-accent transition-colors"
+                >
+                  ← Back
+                </button>
+              )}
+            </div>
+
+            {inlineStep === 'query' ? (
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="oracle-inline-query"
+                    className="block font-display italic text-xl md:text-2xl font-light text-foreground leading-snug"
+                  >
+                    What is worrying you the most right now?
+                  </label>
+                  <p className="mt-2 font-body text-xs text-muted-foreground">
+                    The more specific you are, the better Tara will be able to answer your query.
+                  </p>
+                </div>
+                <div className="relative">
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-accent/30 via-primary/20 to-saffron/20 opacity-70 blur-md"
+                  />
+                  <textarea
+                    id="oracle-inline-query"
+                    rows={5}
+                    value={focus}
+                    onChange={(e) => setFocus(e.target.value)}
+                    placeholder="Share what is weighing on your heart — a relationship, a decision, a fear. This stays private."
+                    className="relative w-full bg-background/70 border border-accent/40 rounded-2xl p-4 font-body text-sm md:text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent focus:bg-background/90 focus:shadow-[0_0_30px_-6px_hsl(var(--accent)/0.55)] transition-all resize-none"
+                  />
+                </div>
+                <button
+                  type="button"
+                  disabled={!focus.trim()}
+                  onClick={() => {
+                    trackGAEvent('oracle_query_continue', {
+                      query_length: focus.trim().length,
+                      positioning: ctaPosition,
+                    });
+                    setInlineStep('birth');
+                  }}
+                  className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
+                >
+                  Continue →
+                </button>
+                <p className="text-center font-body text-[11px] text-muted-foreground/80">
+                  🔒 100% private. Read only by Tara's AI — never by humans.
+                </p>
+              </div>
+            ) : (
+            <>
             <div className="grid grid-cols-1 gap-3">
               <div>
                 <label className="font-body text-[10px] tracking-[0.3em] uppercase text-accent/90">Your Name</label>
@@ -631,7 +694,7 @@ const OracleFunnel = ({
                 } catch {
                   /* ignore */
                 }
-                setStage('focus');
+                generateReport(focus);
               }}
               className="w-full font-body text-sm font-semibold tracking-[0.18em] uppercase px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-accent/30"
             >
@@ -640,6 +703,8 @@ const OracleFunnel = ({
             <p className="text-center font-body text-xs text-muted-foreground">
               {ctaSubtext}
             </p>
+            </>
+            )}
           </div>
         </div>
       );
